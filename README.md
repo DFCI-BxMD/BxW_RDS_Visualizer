@@ -1,4 +1,4 @@
-# RDS Visualizer v1.1
+# BxW RShiny Visualizer
 RDS visualizing RShiny web app developed for use by the BxMD group at DFCI.
 
 Please refer to the [user guide](./docs/RDS_Visualizer_user_guide.pdf) for details on how to use the RDS Visualizer. 
