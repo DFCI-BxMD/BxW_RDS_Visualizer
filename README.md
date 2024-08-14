@@ -1,2 +1,2 @@
-# BxW RShiny Seurat
+# BxW RShiny Visualizer
 
