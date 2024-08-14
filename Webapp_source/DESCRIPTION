@@ -1,0 +1,7 @@
+Title: rds_visualizer
+License: DFCI
+Author: Rizky Kafrawi <rizky_kafrawi@dfci.harvard.edu>
+# AuthorUrl: http://www.rstudio.com/
+Tags: getting-started rds_vis with four visuals
+DisplayMode: normal
+Type: Shiny
