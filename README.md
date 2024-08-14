@@ -1,2 +1,0 @@
-# BxW RShiny Visualizer
-
