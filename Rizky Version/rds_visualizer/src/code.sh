@@ -45,8 +45,8 @@ fi
 chmod -R +777 "$vm_output"
 
 # start RDS Visualizer ...
- 
- url=https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/Webapp_source
+ cd "${vm_output}/rds_vizualizer"
+ url=https://raw.githubusercontent.com/DFCI-BxMD/BxW_RDS_Visualizer/refs/heads/main/Rizky%20Version/Webapp_source
  wget -P "${vm_output}/rds_vizualizer" $url/DESCRIPTION $url/server.R $url/ui.R
  
  # pull and run Shiny Server docker image
@@ -54,9 +54,7 @@ chmod -R +777 "$vm_output"
  docker load -i rds_vis_maria.tar.gz
  
  # attach our rds_vis app's folder as a volume
- docker run --rm -p 443:3838 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -v $PWD/rds_visualizer:/srv/shiny-server/ rds_vis_maria
-
-docker run --rm -p 443:8787 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -e "PROJECT_DIR=$rstudio_sync_dir" -v /var/run/docker.sock:/var/run/docker.sock -v /home/dnanexus:/home/dnanexus -w /home/dnanexus tariship/rstudio_docker_4.4.0:latest
+ docker run --rm -p 443:3838 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -v $PWD/rds_visualizer:/srv/shiny-server/ -v /var/run/docker.sock:/var/run/docker.sock -v /home/dnanexus:/home/dnanexus -w /home/dnanexus rds_vis_maria
 
 }
 
