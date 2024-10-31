@@ -16,51 +16,47 @@ projname=`dx describe $DX_PROJECT_CONTEXT_ID | grep "Name" | awk '{sub(/[^ ]+[ ]
 output_folder=`dx describe $DX_JOB_ID --json | jq .folder | tr -d '"'`
 
 vm_output="/home/dnanexus"
-rstudio_sync_dir=""
+
 if [ "$output_folder" == "/" ];
 then
-   rstudio_folder=rstudio_$(date +%Y%m%d_%H%M%S)
    vm_output="/home/dnanexus/$projname/$rstudio_folder"
-   rstudio_sync_dir="/home/dnanexus/project/$projname/$rstudio_folder"
-   mkdir -p "$rstudio_sync_dir"
    mkdir -p "$vm_output"
 else
    parent_dir=$(dirname "$output_folder")
    vm_output="/home/dnanexus/$projname$output_folder"
-   rstudio_sync_dir="/home/dnanexus/project/$projname$output_folder"
    mkdir -p "/home/dnanexus/$projname$parent_dir"
    dx download $projName:$output_folder/ -o "/home/dnanexus/$projname$parent_dir" -r -f
 fi
 
 
-rdata=${rdata_image:-}
-if [ -z ${rdata} ];
+rds=${rds_file:-}
+if [ -z ${rds} ];
 then 
    echo "No data image provided"
 else
-   fileid=`echo ${rdata} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
-   mkdir -p "${vm_output}/rdata_image" 
+   fileid=`echo ${rds} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
+   mkdir -p "${vm_output}/rds_vizualizer" 
    filename=`dx describe $fileid | grep "Name" | awk '{sub(/[^ ]+[ ]+/,"")}1' | sed 's, ,\\ ,g'`
-   dx download $fileid -o "${vm_output}/rdata_image/${filename}" -f
-   rdata_fullpath="${vm_output}/rdata_image/${filename}"
-   chmod +777 "$rdata_fullpath"
+   dx download $fileid -o "${vm_output}/rds_vizualizer/${filename}" -f
+   rds_fullpath="${vm_output}/rds_vizualizer/${filename}"
+   chmod +777 "$rds_fullpath"
 fi
 
 chmod -R +777 "$vm_output"
 
-# start RStudio Server ...
-docker=${docker_image:-}
-if [ -z "${docker}" ];
-then
-   docker run --rm -p 443:8787 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -e "PROJECT_DIR=$rstudio_sync_dir" -v /var/run/docker.sock:/var/run/docker.sock -v /home/dnanexus:/home/dnanexus -w /home/dnanexus tariship/rstudio_docker_4.4.0:latest
-else
-   dockerid=`echo ${docker} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
-   dx download $dockerid -o /home/dnanexus 
-   docker_name_ext=`dx describe $dockerid | grep "Name" | awk '{sub(/[^ ]+[ ]+/,"")}1' | sed 's, ,\\ ,g'`
-   docker load < "/home/dnanexus/${docker_name_ext}"
-   docker_name=${docker_name_ext%%.tar*}
-   docker_name=${docker_name//[-]/:}
-   docker run --rm -p 443:8787 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -e "PROJECT_DIR=$rstudio_sync_dir" -v /var/run/docker.sock:/var/run/docker.sock -v /home/dnanexus:/home/dnanexus -w /home/dnanexus $docker_name
-fi
+# start RDS Visualizer ...
+ 
+ url=https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/Webapp_source
+ wget -P "${vm_output}/rds_vizualizer" $url/DESCRIPTION $url/server.R $url/ui.R
+ 
+ # pull and run Shiny Server docker image
+ dx download $DX_PROJECT_CONTEXT_ID:/rk_shiny/rds_vis_maria.tar.gz
+ docker load -i rds_vis_maria.tar.gz
+ 
+ # attach our rds_vis app's folder as a volume
+ docker run --rm -p 443:3838 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -v $PWD/rds_visualizer:/srv/shiny-server/ rds_vis_maria
+
+docker run --rm -p 443:8787 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -e "PROJECT_DIR=$rstudio_sync_dir" -v /var/run/docker.sock:/var/run/docker.sock -v /home/dnanexus:/home/dnanexus -w /home/dnanexus tariship/rstudio_docker_4.4.0:latest
+
 }
 
