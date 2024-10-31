@@ -19,7 +19,7 @@ vm_output="/home/dnanexus"
 
 if [ "$output_folder" == "/" ];
 then
-   vm_output="/home/dnanexus/$projname/$rstudio_folder"
+   vm_output="/home/dnanexus/$projname"
    mkdir -p "$vm_output"
 else
    parent_dir=$(dirname "$output_folder")
