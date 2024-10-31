@@ -46,7 +46,7 @@ chmod -R +777 "$vm_output"
 
 # start RDS Visualizer ...
  cd "${vm_output}/rds_vizualizer"
- url=https://raw.githubusercontent.com/DFCI-BxMD/BxW_RDS_Visualizer/refs/heads/main/Rizky%20Version/Webapp_source
+ url=https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/Webapp_source
  wget -P "${vm_output}/rds_vizualizer" $url/DESCRIPTION $url/server.R $url/ui.R
  
  # pull and run Shiny Server docker image
