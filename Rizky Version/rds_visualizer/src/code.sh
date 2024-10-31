@@ -54,7 +54,7 @@ chmod -R +777 "$vm_output"
  docker load -i rds_vis_maria.tar.gz
  
  # attach our rds_vis app's folder as a volume
- docker run --rm -p 443:3838 -e ROOT=TRUE -e RUNROOTLESS=FALSE -e DISABLE_AUTH=true -e "WORKING_DIR=$vm_output" -v $PWD/rds_visualizer:/srv/shiny-server/ -w /home/dnanexus rds_vis_maria
+ docker run --rm -p 443:3838 -v $PWD/rds_visualizer:/srv/shiny-server/ rds_vis_maria
 
 }
 
