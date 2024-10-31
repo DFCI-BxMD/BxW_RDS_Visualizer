@@ -3,7 +3,7 @@
   "title": "rds_visualizer",
   "summary": "RDS visualizing webapp",
   "dxapi": "1.0.0",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "httpsApp": {
           "ports": [443],
           "shared_access": "VIEW"
@@ -17,7 +17,7 @@
       }
     },
     "interpreter": "bash",
-    "file": "src/rds_visualizer.sh",
+    "file": "src/code.sh",
     "distribution": "Ubuntu",
     "release": "20.04",
     "version": "0"
