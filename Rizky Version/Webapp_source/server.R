@@ -6,10 +6,7 @@ base::options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 
 #define server
 function(input, output, session) {
-  
-  ### Define reactive values for global vars...next ver ###
-  # seuratData <- reactiveVal()
-  
+
   ### input logic ###
   
   # Read Seurat object
