@@ -13,7 +13,7 @@
         "name": "rds_file",
         "label": "RDS File",
         "class": "file",
-        "optional": false,
+        "optional": true,
         "patterns": ["*"],
         "help": "The RDS File you want to visualize."
      }
