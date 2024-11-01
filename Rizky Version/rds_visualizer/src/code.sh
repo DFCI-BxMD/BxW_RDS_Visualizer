@@ -33,6 +33,7 @@ rds=${rds_file:-}
 if [ -z ${rds} ];
 then 
    echo "No data image provided"
+   mkdir -p "${vm_output}/rds_vizualizer"
 else
    fileid=`echo ${rds} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
    mkdir -p "${vm_output}/rds_vizualizer" 
