@@ -56,28 +56,27 @@ dashboardPage(
                           
                           # Add any additional content or UI elements here
       ),
-      tab_input <- tabItem(tabName = "input_summ",
-                           h2("Data Summary Page"),
-                           br(),
-                           #file upload
-                           p("Click on the browse button and select the .rds file you wish to generate visualizations for (Max 10 GB)."),
-                           fileInput("seuratFile", 
-                                     "Upload RDS File",
-                                     accept = ".rds"),
-                           br(),
-                           
-                           tabsetPanel(
-                             tabPanel("Metadata Overview",
-                                      br(),
-                                      dataTableOutput("table_cat")
-                                      ),
-                             tabPanel("Metadata",
-                                      br(),
-                                      dataTableOutput("table_meta"))
-                             ),
-                           
-                                      
-      ),
+      tab_input <- tabItem(
+                      tabName = "input_summ",
+                      h2("Data Summary Page"),
+                      br(),
+                      # Update the text to remove file upload instructions
+                      p("This app generates visualizations for a pre-loaded .rds file."),
+                      br(),
+                      # Display panels with data output
+                      tabsetPanel(
+                        tabPanel(
+                          "Metadata Overview",
+                          br(),
+                          dataTableOutput("table_cat")
+                        ),
+                        tabPanel(
+                          "Metadata",
+                          br(),
+                          dataTableOutput("table_meta")
+                        )
+                      )
+  ),
       tab_inputfeatures <- tabItem(tabName = "input",
                                    h2("Feature Plot Page"),
                                    br(),
