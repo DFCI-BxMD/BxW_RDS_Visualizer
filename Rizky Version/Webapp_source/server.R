@@ -11,13 +11,12 @@ function(input, output, session) {
   
   # Read Seurat object
   seuratData <- reactive({
-    inFile <- input$seuratFile 
-    if (is.null(inFile))
-      return(NULL)
-    
-    #read Seurat object from selected file
-    seurat_obj <- readRDS(inFile$datapath)
-    
+    rds_file <- list.files(pattern = "\\.rds$", full.names = TRUE)[1]
+    if (!is.na(rds_file)) {
+        seurat_obj <- readRDS(rds_file)
+    } else {
+      stop("No .rds file found in the current directory.")
+    }
     return(seurat_obj)
   })
   
