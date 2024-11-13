@@ -189,7 +189,7 @@ function(input, output, session) {
   
   #new dimplot logic
   observeEvent(input$plotButton_Dim, {
-    req(seuratData()) # wait for file input
+    req(seuratData(), input$variableInput)
     seurat_data <- seuratData()
     
     if (is.null(seurat_data)) {
@@ -203,7 +203,7 @@ function(input, output, session) {
           output$nodimplot <- renderText("Bad argument")
         } else {
           output$featurePlotDim <- renderPlot({ dim_plot })
-          output$splitToggle <- renderUI({ NULL }) # Hide the splitToggle checkbox
+          output$splitToggle <- renderUI({ NULL })
         }
       } else {
         # Split dim plot colored by group
@@ -213,11 +213,12 @@ function(input, output, session) {
           output$nodimplot <- renderText("Bad argument")
         } else {
           output$featurePlotDim <- renderPlot({ dim_plot })
-          output$splitToggle <- renderUI({ checkboxInput("splitToggle", "Split Dim Plot", value = TRUE) }) # Show the splitToggle checkbox
+          output$splitToggle <- renderUI({ checkboxInput("splitToggle", "Split Dim Plot", value = TRUE) })
         }
       }
     }
   })
+  
   
   ###
   
