@@ -90,8 +90,10 @@ function(input, output, session) {
         text = paste("The following genes were not found:", paste(missing_genes, collapse = ", ")),
         type = "warning")
     } else {
+
+      matched_gene_names <- gene_name_map[gene_names]
       # Generate feature plot
-      feature_plot <- FeaturePlot(object = seurat_data, features = gene_names,reduction = "umap")
+      feature_plot <- FeaturePlot(object = seurat_data, features = matched_gene_names,reduction = "umap")
       
       #assign featureplot to global env
       assign("feature_plot", "new", envir = .GlobalEnv) #this doesnt seem to work... try declaring reactive vals at top of server script
