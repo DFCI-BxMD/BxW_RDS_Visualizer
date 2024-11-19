@@ -69,11 +69,18 @@ function(input, output, session) {
     # Split the input string @ commas into individual gene names using regex
     #[[1]] extracts the first element in list of gene names, which gives us a chr vector 
     #containing the individaul gene names as separate elements
-    gene_names <- strsplit(input$featuresInput, ",\\s*")[[1]] 
+    gene_names <- strsplit(tolower(input$featuresInput), ",\\s*")[[1]] 
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
     
-    # Check if any of the requested genes are missing
-    missing_genes <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
+    # Get original Seurat gene names
+    original_seurat_gene_names <- rownames(seurat_data@assays$RNA@data)
+    
+    # Create a mapping of lowercase to original gene names
+    seurat_gene_names_lower <- tolower(original_seurat_gene_names)
+    gene_name_map <- setNames(original_seurat_gene_names, seurat_gene_names_lower)
+    
+    # Check for missing genes using lowercase comparison
+    missing_genes <- setdiff(gene_names, seurat_gene_names_lower)
     
     if (length(missing_genes) > 0) {
       # output$nofeaturefound <- renderText(paste("The following genes were not found:", paste(missing_genes, collapse = ", "))) #this worked... trying to phase out in favor of warning message
