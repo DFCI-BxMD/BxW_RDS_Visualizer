@@ -69,11 +69,13 @@ function(input, output, session) {
     # Split the input string @ commas into individual gene names using regex
     #[[1]] extracts the first element in list of gene names, which gives us a chr vector 
     #containing the individaul gene names as separate elements
-    gene_names <- strsplit(input$featuresInput, ",\\s*")[[1]] 
+    gene_names <- tolower(strsplit(input$featuresInput, ",\\s*")[[1]])
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
+
+    seurat_gene_names <- tolower(rownames(seurat_data@assays$RNA@data))
     
     # Check if any of the requested genes are missing
-    missing_genes <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
+    missing_genes <- setdiff(gene_names, seurat_gene_names)
     
     if (length(missing_genes) > 0) {
       # output$nofeaturefound <- renderText(paste("The following genes were not found:", paste(missing_genes, collapse = ", "))) #this worked... trying to phase out in favor of warning message
@@ -107,11 +109,13 @@ function(input, output, session) {
     
     # Split the input string @ commas into individual gene names using regex
     #[[1]] extracts the first element in list of gene names, which gives us a chr vector containing the individaul gene names as separate elements
-    gene_names <- strsplit(input$featuresInput, ",\\s*")[[1]] 
+    gene_names <- tolower(strsplit(input$featuresInput, ",\\s*")[[1]])
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
     
+    seurat_gene_names <- tolower(rownames(seurat_data@assays$RNA@data))
+    
     # Check if any of the requested genes are missing
-    missing_genes <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
+    missing_genes <- setdiff(gene_names, seurat_gene_names)
     
     if (length(missing_genes) > 0) {
       # output$nofeaturefound <- renderText(paste("The following genes were not found:", paste(missing_genes, collapse = ", "))) #this worked... trying to phase out in favor of warning message
@@ -189,7 +193,7 @@ function(input, output, session) {
   
   #new dimplot logic
   observeEvent(input$plotButton_Dim, {
-    req(seuratData(), input$variableInput)
+    req(seuratData())
     seurat_data <- seuratData()
     
     if (is.null(seurat_data)) {
@@ -231,11 +235,13 @@ function(input, output, session) {
     seurat_data <- seuratData()
     
     # Split the input string @ commas into individual gene names using regex
-    gene_names <- strsplit(input$featuresInput_vln, ",\\s*")[[1]] 
+    gene_names <- tolower(strsplit(input$featuresInput_vln, ",\\s*")[[1]])
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
+
+    seurat_gene_names <- tolower(rownames(seurat_data@assays$RNA@data))
     
     # Check if any of the requested genes are missing
-    missing_genes_vln <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
+    missing_genes_vln <- setdiff(gene_names, seurat_gene_names)
     
     if (length(missing_genes_vln) > 0) {
       #warning message
