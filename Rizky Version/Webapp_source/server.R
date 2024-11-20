@@ -161,11 +161,9 @@ function(input, output, session) {
     seurat_data <- seuratData()
     if (is.null(seurat_data))
       return(NULL)
-    # Access the RNA assay
-    rna_assay <- seurat_data@assays$RNA
     
     # Get the gene names
-    gene_names <- rownames(rna_assay@data)
+    gene_names <- rownames(seurat_data@assays$RNA@data)
     
     # Set the random seed for reproducibility (optional)
     set.seed(123)
@@ -179,35 +177,32 @@ function(input, output, session) {
   
   
   ###update dimplot/violinplot dropdown###
-  observeEvent(input$seuratFile, {
-    req(seuratData()) # wait for file input
+
+  # Update dropdowns for DimPlot and ViolinPlot when Seurat object is loaded
+  observe({
+    req(seuratData()) # Ensure Seurat object is loaded
     seurat_data <- seuratData()
     
-    #fetch metadata colnames
+    # Fetch metadata column names
     obj_meta <- seurat_data@meta.data
     
-    # Specify the metadata columns you want to check and convert
+    # Convert specified columns to factors if needed
     columns_to_check <- c("sample", "cytotoxic", "exact_subclonotype_id")
-    
-    # Find and convert columns that match the specified names
     for (col in columns_to_check) {
       if (col %in% colnames(obj_meta) && !is.factor(obj_meta[[col]])) {
         obj_meta[[col]] <- as.factor(obj_meta[[col]])
       }
     }
     
-    #assign column factors to categorical_cols var
-    # categorical_cols <- names(obj_meta)[sapply(obj_meta, is.factor)]
+    # Assign column factors to categorical_cols var
     categorical_cols <- names(obj_meta)[sapply(obj_meta, function(col) is.factor(col) && nlevels(col) < 5)]
     
-    #reassign dropdown options
-    updateSelectInput(session, "variableInput",label = "Select a Field to Split Dim Plot By", choices=categorical_cols)
-    
-    updateSelectInput(session, "violinInput",label = "Select a Field to Split Violin Plot By", choices = categorical_cols)
-    
+    # Reassign dropdown options
+    updateSelectInput(session, "variableInput", label = "Select a Field to Split Dim Plot By", choices = categorical_cols)
+    updateSelectInput(session, "violinInput", label = "Select a Field to Split Violin Plot By", choices = categorical_cols)
   })
-  
-  #new dimplot logic
+
+  # DimPlot logic
   observeEvent(input$plotButton_Dim, {
     req(seuratData(), input$variableInput)
     seurat_data <- seuratData()
@@ -218,56 +213,41 @@ function(input, output, session) {
       if (!input$splitToggle) {
         # Unsplit dim plot colored by group
         dim_plot <- DimPlot(object = seurat_data, reduction = "umap", group.by = input$variableInput)
-        
-        if (is.null(dim_plot)) {
-          output$nodimplot <- renderText("Bad argument")
-        } else {
-          output$featurePlotDim <- renderPlot({ dim_plot })
-          output$splitToggle <- renderUI({ NULL })
-        }
       } else {
         # Split dim plot colored by group
         dim_plot <- DimPlot(object = seurat_data, reduction = "umap", split.by = input$variableInput, group.by = input$variableInput)
-        
-        if (is.null(dim_plot)) {
-          output$nodimplot <- renderText("Bad argument")
-        } else {
-          output$featurePlotDim <- renderPlot({ dim_plot })
-          output$splitToggle <- renderUI({ checkboxInput("splitToggle", "Split Dim Plot", value = TRUE) })
-        }
+      }
+      
+      if (is.null(dim_plot)) {
+        output$nodimplot <- renderText("Bad argument")
+      } else {
+        output$featurePlotDim <- renderPlot({ dim_plot })
       }
     }
   })
-  
-  
-  ###
-  
-  #update violinplot dropdown#
-  
-  
-  ### violinplot logic ###
+
+  # ViolinPlot logic
   observeEvent(input$plotButton_violin, {
-    req(seuratData(),input$featuresInput_vln,input$violinInput) #wait for all inputs
+    req(seuratData(), input$featuresInput_vln, input$violinInput)
     seurat_data <- seuratData()
     
     # Split the input string @ commas into individual gene names using regex
     gene_names <- strsplit(input$featuresInput_vln, ",\\s*")[[1]] 
-    gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
+    gene_names <- trimws(gene_names)
     
     # Check if any of the requested genes are missing
     missing_genes_vln <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
     
     if (length(missing_genes_vln) > 0) {
-      #warning message
       shinyalert::shinyalert(
         title = "Warning: Invalid Input",
         text = paste("The following genes were not found:", paste(missing_genes_vln, collapse = ", ")),
-        type = "warning")
+        type = "warning"
+      )
     } else {
-      # Generate feature plot
-      violin_plot <- VlnPlot(object = seurat_data, features = gene_names, split.by =input$violinInput)
+      # Generate violin plot
+      violin_plot <- VlnPlot(object = seurat_data, features = gene_names, split.by = input$violinInput)
       
-      #make sure featureplot is not null before rendering plot
       if (is.null(violin_plot)) {
         output$badviolinplot <- renderText("Bad argument")
       } else {
@@ -275,6 +255,6 @@ function(input, output, session) {
       }
     }
   })
-} #end of server
+}
 
 #########           SERVER END          ##########
