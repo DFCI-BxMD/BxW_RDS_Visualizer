@@ -14,6 +14,8 @@ function(input, output, session) {
     rds_file <- list.files(pattern = "\\.rds$", full.names = TRUE)[1]
     if (!is.na(rds_file)) {
         seurat_obj <- readRDS(rds_file)
+        options(Seurat.object.assay.version = 'v3')
+        seurat_obj=UpdateSeuratObject(seurat_obj)
     } else {
       stop("No .rds file found in the current directory.")
     }
@@ -73,7 +75,7 @@ function(input, output, session) {
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
     
     # Get original Seurat gene names
-    original_seurat_gene_names <- rownames(seurat_data@assays$RNA@data)
+    original_seurat_gene_names <- rownames(seurat_data)
     
     # Create a mapping of lowercase to original gene names
     seurat_gene_names_lower <- tolower(original_seurat_gene_names)
@@ -121,7 +123,7 @@ function(input, output, session) {
     gene_names <- trimws(gene_names)  # Trim leading and trailing spaces from gene names
     
     # Get original Seurat gene names
-    original_seurat_gene_names <- rownames(seurat_data@assays$RNA@data)
+    original_seurat_gene_names <- rownames(seurat_data)
     
     # Create a mapping of lowercase to original gene names
     seurat_gene_names_lower <- tolower(original_seurat_gene_names)
@@ -163,7 +165,7 @@ function(input, output, session) {
       return(NULL)
     
     # Get the gene names
-    gene_names <- rownames(seurat_data@assays$RNA@data)
+    gene_names <- rownames(seurat_data)
     
     # Set the random seed for reproducibility (optional)
     set.seed(123)
@@ -236,7 +238,7 @@ function(input, output, session) {
     gene_names <- trimws(gene_names)
     
     # Check if any of the requested genes are missing
-    missing_genes_vln <- setdiff(gene_names, rownames(seurat_data@assays$RNA@data))
+    missing_genes_vln <- setdiff(gene_names, rownames(seurat_data))
     
     if (length(missing_genes_vln) > 0) {
       shinyalert::shinyalert(
