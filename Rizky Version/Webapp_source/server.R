@@ -16,7 +16,7 @@ function(input, output, session) {
   observeEvent(input$showFiles, {
     
     # List files in the mounted directory
-    files <- list.files(mounted_dir, pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)
+    files <- list.files(mounted_dir, pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)[1]
     
     # Update the selectInput with the list of files
     output$fileSelectorUI <- renderUI({
