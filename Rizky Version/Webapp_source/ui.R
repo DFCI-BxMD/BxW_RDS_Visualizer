@@ -42,7 +42,7 @@ dashboardPage(
                           actionButton("showFiles", "Show Available Files"),
                           uiOutput("fileSelectorUI"),
                           actionButton("loadFile", "Load Selected File"),
-                          verbatimTextOutput("loadedFile")
+                          verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
                           br(),
