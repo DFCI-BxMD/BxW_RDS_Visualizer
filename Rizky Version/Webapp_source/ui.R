@@ -38,6 +38,11 @@ dashboardPage(
   dashboardBody(
     tabItems(
       tab_home <- tabItem(tabName = "home",
+                          h2("Select a File"),
+                          actionButton("showFiles", "Show Available Files"),
+                          uiOutput("fileSelectorUI"),
+                          actionButton("loadFile", "Load Selected File"),
+                          verbatimTextOutput("loadedFile")
                           h2("Home Page"),
                           br(),
                           br(),

@@ -29,19 +29,6 @@ else
 fi
 
 
-rds=${rds_file:-}
-if [ -z ${rds} ];
-then 
-   echo "No data image provided"
-   mkdir -p "${vm_output}/rds_vizualizer"
-else
-   fileid=`echo ${rds} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
-   mkdir -p "${vm_output}/rds_vizualizer" 
-   filename=`dx describe $fileid | grep "Name" | awk '{sub(/[^ ]+[ ]+/,"")}1' | sed 's, ,\\ ,g'`
-   dx download $fileid -o "${vm_output}/rds_vizualizer/${filename}" -f
-   rds_fullpath="${vm_output}/rds_vizualizer/${filename}"
-   chmod +777 "$rds_fullpath"
-fi
 
 chmod -R +777 "$vm_output"
 
@@ -55,7 +42,7 @@ chmod -R +777 "$vm_output"
  docker load -i rds_vis_maria.tar.gz
  
  # attach our rds_vis app's folder as a volume
- docker run --rm -p 443:3838 -v $PWD:/srv/shiny-server/ rds_vis_maria
+ docker run --rm -p 443:3838 -v $PWD:/srv/shiny-server/ rds_vis_maria -v /home/dnanexus:/home/dnanexus
 
 }
 

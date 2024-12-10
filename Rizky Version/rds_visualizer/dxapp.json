@@ -8,16 +8,7 @@
           "ports": [443],
           "shared_access": "VIEW"
       },
-  "inputSpec": [
-     {
-        "name": "rds_file",
-        "label": "RDS File",
-        "class": "file",
-        "optional": true,
-        "patterns": ["*"],
-        "help": "The RDS File you want to visualize."
-     }
-],
+  "inputSpec": [],
   "outputSpec": [],
   "runSpec": {
     "timeoutPolicy": {

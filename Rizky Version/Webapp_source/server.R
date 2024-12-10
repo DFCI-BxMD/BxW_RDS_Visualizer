@@ -9,16 +9,37 @@ function(input, output, session) {
 
   ### input logic ###
   
-  # Read Seurat object
-  seuratData <- reactive({
-    rds_file <- list.files(pattern = "\\.rds$", full.names = TRUE)[1]
-    if (!is.na(rds_file)) {
-        seurat_obj <- readRDS(rds_file)
-    } else {
-      stop("No .rds file found in the current directory.")
-    }
-    return(seurat_obj)
+  mounted_dir <- "/home/dnanexus/project"
+
+  seuratData <- reactiveVal(NULL)
+
+  observeEvent(input$showFiles, {
+    
+    # List files in the mounted directory
+    files <- list.files(mounted_dir, pattern = "\\.rds$", full.names = TRUE)
+    
+    # Update the selectInput with the list of files
+    output$fileSelectorUI <- renderUI({
+      selectInput("selectedFile", "Choose a file:", choices = files)
+    })
   })
+
+  # Load the selected file when the button is clicked
+  observeEvent(input$loadFile, {
+    req(input$selectedFile)
+    
+    # Load the selected RDS file
+    seurat_obj <- readRDS(input$selectedFile)
+    
+    # Store the loaded Seurat object in a reactive value
+    seuratData(seurat_obj)
+    
+    # Display the selected file path
+    output$loadedFile <- renderText({
+      paste("Loaded file:", input$selectedFile)
+    })
+  })
+    
   
   # Render table-categorical only
   output$table_cat <- DT::renderDataTable({
