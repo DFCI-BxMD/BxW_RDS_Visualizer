@@ -41,7 +41,6 @@ dashboardPage(
                           h2("Select a File"),
                           fileInput("fileInput", "Choose a Seurat RDS File", accept = ".rds"),
                           verbatimTextOutput("loadedFile"),
-                          DTOutput("table_cat"),
                           h2("Home Page"),
                           br(),
                           br(),
