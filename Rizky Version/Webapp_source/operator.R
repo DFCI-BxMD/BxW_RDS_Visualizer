@@ -15,8 +15,8 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   reactivevalue$genes_name=rownames(reactivevalue$SeuratObject)
   
   reactivevalue$reduction=names((reactivevalue$SeuratObject@reductions))
-  reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
-  reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
+  #reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
+  #reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
   
   output$MainFigure=renderPlot(DimPlot(reactivevalue$SeuratObject))
   
@@ -31,9 +31,19 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
       Bar_Graph_Columns=c(Bar_Graph_Columns,i)
     }
   }
+  
   updateSelectizeInput(session = session,inputId = 'Bar_Graph_y',choices =Bar_Graph_Columns,selected = NULL,server=T)
   updateSelectizeInput(session = session,inputId = 'Bar_Graph_fill',choices =Bar_Graph_Columns,selected = NULL,server=T)
-  updateSelectizeInput(session = session,inputId = 'GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'FeaturePlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'FeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
+  
+  updateSelectizeInput(session = session,inputId = 'DimPlot_group_by',choices =Bar_Graph_Columns,selected = NULL,server=T)
+  updateSelectizeInput(session = session,inputId = 'DimPlot_split_by',choices =c(Bar_Graph_Columns,''),selected = '',server=T)
+  updateSelectizeInput(session = session,inputId = 'DimPlot_reduction',choices =reactivevalue$reduction,selected = NULL,server=T)
+  
+  updateSelectizeInput(session = session,inputId = 'VlnPlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'VlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
+  
   
 }
 )
@@ -80,6 +90,58 @@ observeEvent(BarGraphListener(),{
 })
 
 
+plotDimplot=eventReactive(input$plotDimPlot_Button, {
+  if (reactivevalue$Loaded) {
+    if (input$DimPlot_split_by!=''){
+      if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
+        number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
+      } else {
+        number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
+      }
+      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
+                             ncol = number_col,reduction = input$DimPlot_reduction))
+    } else {
+      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
+    }
+    
+  }
 
+  output$DimPlot=renderPlot(plot)
+})
+
+observe(plotDimplot())
+
+
+
+
+
+
+plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
+  
+  plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+  
+  output$FeaturePlot=renderPlot(plot)
+})
+
+observe(plotFeaturePlot())
+
+
+
+
+
+
+plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
+  if (length(input$VlnPlot_GeneInput)>2) {
+    number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
+  } else {
+    number_of_cols=length(input$VlnPlot_GeneInput)
+    
+  }
+  plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
+  
+  output$VlnPlot=renderPlot(plot)
+})
+
+observe(plotVlnPlot())
 
 
