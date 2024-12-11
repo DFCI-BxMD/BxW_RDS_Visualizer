@@ -8,12 +8,9 @@ base::options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 function(input, output, session) {
 
   ### input logic ###
-  
-  roots <- c(mounted_dir = "/home/dnanexus/project") 
-
   seuratData <- reactiveVal(NULL)
 
-  shinyFileChoose(input, "files", roots = roots, filetypes = c('', 'rds'))
+  shinyFileChoose(input, "files", roots=c(wd="."), filetypes = c('', 'rds'))
 
   observeEvent(input$files, {
       # Parse the selected file path
