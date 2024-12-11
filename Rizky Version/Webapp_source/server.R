@@ -13,32 +13,20 @@ function(input, output, session) {
 
   seuratData <- reactiveVal(NULL)
 
-  observeEvent(input$showFiles, {
+  observeEvent(input$fileInput, {
+    req(input$fileInput)
     
-    # List files in the mounted directory
-    files <- list.files(mounted_dir, pattern = "\\.rds$", full.names = TRUE, recursive = TRUE)[1]
-    
-    # Update the selectInput with the list of files
-    output$fileSelectorUI <- renderUI({
-      selectInput("selectedFile", "Choose a file:", choices = files)
-    })
-  })
+      # Load the selected RDS file
+      seurat_obj <- readRDS(input$fileInput$datapath)
 
-  # Load the selected file when the button is clicked
-  observeEvent(input$loadFile, {
-    req(input$selectedFile)
-    
-    # Load the selected RDS file
-    seurat_obj <- readRDS(input$selectedFile)
-    
-    # Store the loaded Seurat object in a reactive value
-    seuratData(seurat_obj)
-    
-    # Display the selected file path
-    output$loadedFile <- renderText({
-      paste("Loaded file:", input$selectedFile)
-    })
-  })
+      # Store the loaded Seurat object in a reactive value
+      seuratData(seurat_obj)
+
+      # Display the selected file name
+      output$loadedFile <- renderText({
+        paste("Loaded file:", input$fileInput$name)
+        })
+      })
     
   
   # Render table-categorical only

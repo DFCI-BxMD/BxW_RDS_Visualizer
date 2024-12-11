@@ -39,10 +39,9 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          actionButton("showFiles", "Show Available Files"),
-                          uiOutput("fileSelectorUI"),
-                          actionButton("loadFile", "Load Selected File"),
+                          fileInput("fileInput", "Choose a Seurat RDS File", accept = ".rds"),
                           verbatimTextOutput("loadedFile"),
+                          DTOutput("table_cat")
                           h2("Home Page"),
                           br(),
                           br(),
