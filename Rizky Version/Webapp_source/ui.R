@@ -2,15 +2,6 @@
 #options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 
 #load libraries
-library(shiny)
-library(shinydashboard)
-library(shinydashboardPlus)
-library(purrr)
-library(stringr)
-library(Seurat)
-library(DT)
-library(shinyalert)
-library(ggplot2)
 
 
 #########           UI START          ##########
@@ -29,8 +20,8 @@ dashboardPage(
     sidebarMenu(
       menuItem("Home", tabName = "home", icon = icon("home")),
       menuItem("Data Summary", tabName="input_summ", icon=icon("table")),
-      menuItem("Feature Plot", tabName = "input", icon = icon("chart-bar")),
-      menuItem("Dim Plot", tabName = "dim", icon = icon("cubes")),
+      menuItem("Dim Plot", tabName = "DimPlot", icon = icon("cubes")),
+      menuItem("Feature Plot", tabName = "Feature_plot_page", icon = icon("chart-bar")),
       menuItem("Violin Plot", tabName = "violin", icon = icon("record-vinyl")),
       menuItem("Help Page", tabName = "help", icon = icon("question"))
     )
@@ -66,18 +57,28 @@ dashboardPage(
                       # Display panels with data output
                       tabsetPanel(
                         tabPanel(
-                          "Metadata Overview",
+                          "Main Figure",
                           br(),
-                          dataTableOutput("table_cat")
+                          imageOutput('MainFigure')
                         ),
                         tabPanel(
                           "Metadata",
                           br(),
-                          dataTableOutput("table_meta")
+                          dataTableOutput("Metadata")
+                        ),
+                        tabPanel(
+                          "Data Distribution",
+                          br(),
+                          selectizeInput('Bar_Graph_y','Group in Y-Axis',choices=NULL,selected=NULL),
+                          selectizeInput('Bar_Graph_fill','Groups that will fill the colors of bar',choices=NULL,selected=NULL),
+                          br(),
+                          checkboxInput('Bar_Graph_Percentage','Generate Percentage Bar Graph'),
+                          br(),
+                          plotOutput('BarGraph')
                         )
                       )
   ),
-      tab_inputfeatures <- tabItem(tabName = "input",
+      tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
                                    h2("Feature Plot Page"),
                                    br(),
                                    p("Once an .rds file has been uploaded, the top of this page will populate with sample genes."),
@@ -88,7 +89,7 @@ dashboardPage(
                                    br(),
                                    p("Enter the feature of interest and then navigate between the UMAP and PCA subtabs to generate a feature plot for each respective reduction. Note that gene names are case sensitive."),
                                    br(),
-                                   textInput("featuresInput", "Enter Gene Name:"),
+                                   selectizeInput("GeneInput", "Enter Gene Name:",choices = NULL,selected = NULL),
                                    br(),
                                    #umap for multiple visualization tabs
                                    tabsetPanel(
@@ -110,7 +111,7 @@ dashboardPage(
       ),
       # tab_input,
       # tab_feature,
-      tab_dim <- tabItem(tabName = "dim",
+      tab_dim <- tabItem(tabName = "DimPlot",
                          h2("Dim Plot"),
                          br(),
                          p("This page generates DimPlots that can be split by different groups 
