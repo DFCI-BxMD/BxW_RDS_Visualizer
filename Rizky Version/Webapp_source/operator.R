@@ -6,7 +6,6 @@
 
 observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   print(reactivevalue$Loaded)
-  reactivevalue$Loaded=T
   reactivevalue$SeuratObject=readRDS(reactivevalue$RDS_directory[1])
   reactivevalue$SeuratObject=UpdateSeuratObject(reactivevalue$SeuratObject)
   reactivevalue$metadata=reactivevalue$SeuratObject@meta.data
@@ -44,7 +43,7 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   updateSelectizeInput(session = session,inputId = 'VlnPlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
   updateSelectizeInput(session = session,inputId = 'VlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
   
-  
+  reactivevalue$Loaded=T
 }
 )
 
@@ -55,6 +54,8 @@ BarGraphListener <- reactive({
 
 
 observeEvent(BarGraphListener(),{
+  
+  if (reactivevalue$Loaded) {
   if (!is.null(reactivevalue$metadata)&input$Bar_Graph_y!=''&input$Bar_Graph_fill!='') {
     if (input$Bar_Graph_y!=input$Bar_Graph_fill){
       Reference=data.frame(table(reactivevalue$metadata[,input$Bar_Graph_fill]))
@@ -92,6 +93,7 @@ observeEvent(BarGraphListener(),{
       
     }
   }
+  }
 })
 
 
@@ -122,10 +124,12 @@ observe(plotDimplot())
 
 
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
-  
+  if (reactivevalue$Loaded) {
+    
   plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
   
   output$FeaturePlot=renderPlot(plot)
+  }
 })
 
 observe(plotFeaturePlot())
@@ -136,6 +140,8 @@ observe(plotFeaturePlot())
 
 
 plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
+  if (reactivevalue$Loaded) {
+    
   if (length(input$VlnPlot_GeneInput)>2) {
     number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
   } else {
@@ -145,6 +151,7 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
   
   output$VlnPlot=renderPlot(plot)
+  }
 })
 
 observe(plotVlnPlot())
