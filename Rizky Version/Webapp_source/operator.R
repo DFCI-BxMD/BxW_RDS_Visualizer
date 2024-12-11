@@ -74,6 +74,8 @@ observeEvent(BarGraphListener(),{
             x=CellNumber,y=Variable1,fill=Variable2
           ))+geom_bar(stat = 'identity',position = 'stack')+xlab('Cell Number')+ylab(input$BarGraph1)+labs(fill=input$BarGraph2) )
         }
+      output$BarGraph_Table=DT::renderDataTable(DT::datatable(temp,
+                                                              options = list(scrollX = TRUE, keys = TRUE, pageLength = 5),filter = list(position = "top")),server = T)
     } else {
       temp=data.frame(table(reactivevalue$metadata[,input$Bar_Graph_y]))
       colnames(temp)=c("Variable1",'CellNumber')
@@ -85,6 +87,9 @@ observeEvent(BarGraphListener(),{
             x=CellNumber,y=Variable1
           ))+geom_bar(stat = 'identity',position = 'stack')+xlab('Cell Number')+ylab(input$BarGraph1)+labs(fill=input$BarGraph2) )
         }
+      output$BarGraph_Table=DT::renderDataTable(DT::datatable(temp,
+                                                        options = list(scrollX = TRUE, keys = TRUE, pageLength = 5),filter = list(position = "top")),server = T)
+      
     }
   }
 })

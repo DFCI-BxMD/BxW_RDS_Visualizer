@@ -74,7 +74,10 @@ dashboardPage(
                           br(),
                           checkboxInput('Bar_Graph_Percentage','Generate Percentage Bar Graph'),
                           br(),
-                          plotOutput('BarGraph')
+                          plotOutput('BarGraph'),
+                          br(),
+                          dataTableOutput("BarGraph_Table")
+                          
                         )
                       )
   ),
