@@ -9,24 +9,31 @@ function(input, output, session) {
 
   ### input logic ###
   
-  mounted_dir <- "/home/dnanexus/project"
+  roots <- c(mounted_dir = "/home/dnanexus/project") 
 
   seuratData <- reactiveVal(NULL)
 
-  observeEvent(input$fileInput, {
-    req(input$fileInput)
-    
-      # Load the selected RDS file
-      seurat_obj <- readRDS(input$fileInput$datapath)
+  shinyFileChoose(input, 'files', roots = roots, filetypes = c('', 'rds'))
 
-      # Store the loaded Seurat object in a reactive value
-      seuratData(seurat_obj)
-
-      # Display the selected file name
-      output$loadedFile <- renderText({
-        paste("Loaded file:", input$fileInput$name)
+  observeEvent(input$files, {
+      # Parse the selected file path
+      fileinfo <- parseFilePaths(roots, input$files)
+      selected_file <- as.character(fileinfo$datapath)
+      
+      # Check if a file was selected
+      if (length(selected_file) > 0 && file.exists(selected_file)) {
+        # Load the selected RDS file
+        seurat_obj <- readRDS(selected_file)
+        
+        # Store the loaded Seurat object in a reactive value
+        seuratData(seurat_obj)
+        
+        # Display the selected file path
+        output$loadedFile <- renderText({
+          paste("Loaded file:", selected_file)
         })
-      })
+      }
+    })
     
   
   # Render table-categorical only

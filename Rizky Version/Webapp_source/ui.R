@@ -39,7 +39,7 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          fileInput("fileInput", "Choose a Seurat RDS File", accept = ".rds"),
+                          shinyFilesButton('files', label='File select', title='Please select a file', multiple=FALSE),
                           verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
