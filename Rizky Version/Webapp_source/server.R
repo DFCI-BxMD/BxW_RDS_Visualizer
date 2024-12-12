@@ -10,7 +10,7 @@ function(input, output, session) {
   ### input logic ###
   seuratData <- reactiveVal(NULL)
 
-  shinyFileChoose(input, "files", roots=c(wd="."), filetypes = c("", "rds"))
+  shinyFileChoose(input, "files", roots=c(wd=normalizePath(".")), filetypes = c("", "rds"))
 
   observeEvent(input$files, {
       # Parse the selected file path
