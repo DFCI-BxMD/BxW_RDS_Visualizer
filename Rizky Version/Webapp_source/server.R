@@ -8,9 +8,10 @@ base::options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 function(input, output, session) {
 
   ### input logic ###
+  
   seuratData <- reactiveVal(NULL)
 
-  shinyFileChoose(input, "files", roots=c(wd="."), filetypes = c(""))
+  shinyFileChoose(input, "files", roots=c(wd="."), filetypes = c("", "rds"))
 
   observeEvent(input$files, {
       # Parse the selected file path
