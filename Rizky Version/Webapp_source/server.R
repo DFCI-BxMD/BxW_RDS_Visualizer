@@ -30,8 +30,6 @@ observeEvent(input$files, {
     if (length(selected_file) > 0 && file.exists(selected_file)) {
       # Load the selected RDS file
       seurat_obj <- readRDS(selected_file)
-
-      reactivevalue$RDS_directory=seurat_obj
       
       # Display the selected file path
       output$loadedFile <- renderText({
@@ -40,6 +38,7 @@ observeEvent(input$files, {
     }
   })
 
+reactivevalue$RDS_directory=seurat_obj
 
 source('operator.R',local = T)
 
