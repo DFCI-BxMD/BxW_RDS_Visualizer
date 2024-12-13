@@ -13,7 +13,7 @@ library(ggplot2)
 
 function(input, output, session) {
 
-reactivevalue=reactiveValues(RDS_directory=NULL,
+reactivevalue=reactiveValues(
                              SeuratObject=NULL,
                              Loaded=F,
                              metadata=NULL,
@@ -30,6 +30,7 @@ observeEvent(input$files, {
     if (length(selected_file) > 0 && file.exists(selected_file)) {
       # Load the selected RDS file
       seurat_obj <- readRDS(selected_file)
+      reactivevalue$SeuratObject <- seurat_obj
       
       # Display the selected file path
       output$loadedFile <- renderText({
@@ -38,7 +39,6 @@ observeEvent(input$files, {
     }
   })
 
-reactivevalue$RDS_directory=seurat_obj
 
 source('operator.R',local = T)
 
