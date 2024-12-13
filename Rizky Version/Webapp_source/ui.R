@@ -2,16 +2,6 @@
 #options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 
 #load libraries
-library(shiny)
-library(shinydashboard)
-library(shinydashboardPlus)
-library(shinyFiles)
-library(purrr)
-library(stringr)
-library(Seurat)
-library(DT)
-library(shinyalert)
-library(ggplot2)
 
 
 #########           UI START          ##########
@@ -30,9 +20,9 @@ dashboardPage(
     sidebarMenu(
       menuItem("Home", tabName = "home", icon = icon("home")),
       menuItem("Data Summary", tabName="input_summ", icon=icon("table")),
-      menuItem("Feature Plot", tabName = "input", icon = icon("chart-bar")),
-      menuItem("Dim Plot", tabName = "dim", icon = icon("cubes")),
-      menuItem("Violin Plot", tabName = "violin", icon = icon("record-vinyl")),
+      menuItem("Dim Plot", tabName = "DimPlot", icon = icon("cubes")),
+      menuItem("Feature Plot", tabName = "Feature_plot_page", icon = icon("chart-bar")),
+      menuItem("Violin Plot", tabName = "VlnPlot", icon = icon("record-vinyl")),
       menuItem("Help Page", tabName = "help", icon = icon("question"))
     )
   ),
@@ -70,51 +60,45 @@ dashboardPage(
                       # Display panels with data output
                       tabsetPanel(
                         tabPanel(
-                          "Metadata Overview",
+                          "Main Figure",
                           br(),
-                          dataTableOutput("table_cat")
+                          imageOutput('MainFigure')
                         ),
                         tabPanel(
                           "Metadata",
                           br(),
-                          dataTableOutput("table_meta")
+                          dataTableOutput("Metadata")
+                        ),
+                        tabPanel(
+                          "Data Distribution",
+                          br(),
+                          selectizeInput('Bar_Graph_y','Group in Y-Axis',choices=NULL,selected=NULL),
+                          selectizeInput('Bar_Graph_fill','Groups that will fill the colors of bar',choices=NULL,selected=NULL),
+                          br(),
+                          checkboxInput('Bar_Graph_Percentage','Generate Percentage Bar Graph'),
+                          br(),
+                          plotOutput('BarGraph'),
+                          br(),
+                          dataTableOutput("BarGraph_Table")
+                          
                         )
                       )
   ),
-      tab_inputfeatures <- tabItem(tabName = "input",
+      tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
                                    h2("Feature Plot Page"),
+
                                    br(),
-                                   p("Once an .rds file has been uploaded, the top of this page will populate with sample genes."),
+                                   p("Enter the gene of interest and color the selected dimension reduction with its expression"),
                                    br(),
-                                   p("Try some of these sample genes below:"),
+                                   selectInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
+                                   selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
+                                   actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   verbatimTextOutput("sampleGenes"),
-                                   br(),
-                                   p("Enter the feature of interest and then navigate between the UMAP and PCA subtabs to generate a feature plot for each respective reduction. Note that gene names are case sensitive."),
-                                   br(),
-                                   textInput("featuresInput", "Enter Gene Name:"),
-                                   br(),
-                                   #umap for multiple visualization tabs
-                                   tabsetPanel(
-                                     tabPanel("UMAP",
-                                              br(),
-                                              actionButton("plotButton_UMAP","Generate UMAP Plot"),
-                                              br(),
-                                              plotOutput("featurePlotUMAP", height = 600, width = 600)
-                                              
-                                     ),
-                                     tabPanel("PCA",
-                                              br(),
-                                              actionButton("plotButton_PCA","Generate PCA Plot"),
-                                              br(),
-                                              plotOutput("featurePlotPCA", height = 600, width = 600))
-                                     
-                                   )
+                                   plotOutput('FeaturePlot')
+
                                    
       ),
-      # tab_input,
-      # tab_feature,
-      tab_dim <- tabItem(tabName = "dim",
+      tab_dim <- tabItem(tabName = "DimPlot",
                          h2("Dim Plot"),
                          br(),
                          p("This page generates DimPlots that can be split by different groups 
@@ -122,30 +106,28 @@ dashboardPage(
                            the uploaded Seurat object. By default, the Dimplot will not be split by a group. 
                            To split the visualization by a group, toggle the checkbox and select a group from the dropdown."),
                          br(),
-                         checkboxInput("splitToggle", "Split Dim Plot", value = FALSE),
-                         
+                         #checkboxInput("splitToggle", "Split Dim Plot", value = FALSE),
+                         selectizeInput('DimPlot_group_by','Color the DimPlots by: ',choices=NULL),
                          br(),
-                         selectInput("variableInput", label = "Select a Group:",
-                                     choices = "Input File For Dropdown Options"),
-                         br(),
-                         actionButton("plotButton_Dim","Generate DimPlot"),
-                         br(),
-                         plotOutput("featurePlotDim", height = 600, width = 900)
+                        # selectInput("variableInput", label = "Select a Group:",
+                        #             choices = "Input File For Dropdown Options"),
+                        selectizeInput('DimPlot_split_by','Splity the DimPlots by: ',choices=NULL),
+                        selectizeInput('DimPlot_reduction','Plot the DimPlots by : ',choices=NULL),
+                        
+                        br(),
+                        actionButton("plotDimPlot_Button","Generate DimPlot"),
+                        br(),
+                        plotOutput("DimPlot")
                          
       ),
-      tab_violin <- tabItem(tabName = "violin",
+      tab_violin <- tabItem(tabName = "VlnPlot",
                             h2("Violin Plot Page"),
                             br(),
-                            p("Enter the feature of interest and then select a category to split the plot by:"),
-                            br(),
-                            textInput("featuresInput_vln", "Enter Gene Name:"),
-                            br(),
-                            selectInput("violinInput", label = "Select a Group:",
-                                        choices = "Input File For Dropdown Options"),
-                            br(),
-                            actionButton("plotButton_violin","Generate Violin Plot"),
-                            br(),
-                            plotOutput("violinplot", height = 600, width = 900)
+                            selectInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
+                            selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
+                            actionButton("plotVlnPlot_Button","Generate Violin Plot"),
+                            
+                            plotOutput("VlnPlot")
       ),
       
       tab_help <- tabItem(tabName = "help",
