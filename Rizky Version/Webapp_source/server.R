@@ -11,11 +11,11 @@ function(input, output, session) {
   
   seuratData <- reactiveVal(NULL)
 
-  shinyFileChoose(input, "files", roots=c(wd="."), filetypes = c("", "rds"))
+  shinyFileChoose(input, "files", roots=c(wd="../project"), filetypes = c("", "rds"))
 
   observeEvent(input$files, {
       # Parse the selected file path
-      fileinfo <- parseFilePaths(c(wd="."), input$files)
+      fileinfo <- parseFilePaths(c(wd="../project"), input$files)
       selected_file <- as.character(fileinfo$datapath)
       
       # Check if a file was selected
