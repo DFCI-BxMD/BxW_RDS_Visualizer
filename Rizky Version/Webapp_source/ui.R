@@ -40,8 +40,8 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          shinycssloaders::withSpinner(shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE)),
-                          verbatimTextOutput("loadedFile"),
+                          shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
+                          shinycssloaders::withSpinner(verbatimTextOutput("loadedFile")),
                           h2("Home Page"),
                           br(),
                           br(),
@@ -185,7 +185,7 @@ dashboardPage(
         ),
         tags$img(
           src ="https://raw.githubusercontent.com/tpathakdfci/Logo/main/Home%20_%20Informatics%20and%20Analytics.png",
-          style="display: block; margin-left: auto; margin-right: auto; width:10%; height:5%",
+          style="display: block; margin-left: auto; margin-right: auto; width:20%; height:15%",
         )
         ),
     
