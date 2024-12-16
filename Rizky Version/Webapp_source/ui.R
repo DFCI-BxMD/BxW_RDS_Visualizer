@@ -6,6 +6,7 @@ library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyFiles)
+library(shinycssloaders)
 library(purrr)
 library(stringr)
 library(Seurat)
@@ -41,7 +42,7 @@ dashboardPage(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
                           shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
-                          verbatimTextOutput("loadedFile"),
+                          withSpinner(verbatimTextOutput("loadedFile")),
                           h2("Home Page"),
                           br(),
                           br(),
