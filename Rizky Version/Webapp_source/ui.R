@@ -184,7 +184,7 @@ dashboardPage(
           br(),
         ),
         tags$img(
-          src ="https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/docs/bxMD_logo.jpeg",
+          src ="https://raw.githubusercontent.com/DFCI-BxMD/BxW_RDS_Visualizer/blob/main/Rizky%20Version/docs/Home%20_%20Informatics%20and%20Analytics.png",
           style="display: block; margin-left: auto; margin-right: auto; width:35%; height:15%",
         )
         ),
