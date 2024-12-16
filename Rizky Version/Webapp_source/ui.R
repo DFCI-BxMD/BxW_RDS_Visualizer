@@ -40,7 +40,7 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
+                          shinycssloaders::withSpinner(shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE)),
                           verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
