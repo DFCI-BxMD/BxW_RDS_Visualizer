@@ -2,10 +2,10 @@
 #   has R, RStudio, tidyverse, devtools, tex, and publishing-related packages
 FROM rocker/shiny
 
-MAINTAINER Rizky Kafrawi <rkafrawi@dfci.harvard.edu>
 
 # Install system dependencies
-RUN apt-get update && \
+RUN apt-get clean && \
+     apt-get update && \
     apt-get install -y --no-install-recommends \
     libgsl-dev \
     libxml2-dev \
@@ -19,3 +19,5 @@ RUN R --no-echo --no-restore --no-save -e "install.packages('Seurat')"
 
 # Install SeuratDisk
 RUN R --no-echo --no-restore --no-save -e "remotes::install_github('mojaveazure/seurat-disk')"
+
+RUN R -e "install.packages('shinyFiles')"
