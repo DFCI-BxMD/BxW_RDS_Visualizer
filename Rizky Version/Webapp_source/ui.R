@@ -41,8 +41,8 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
-                          withSpinner(verbatimTextOutput("loadedFile")),
+                          withSpinner(shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE)),
+                          verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
                           br(),
@@ -105,7 +105,7 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   plotOutput('FeaturePlot')
+                                   withSpinner(plotOutput('FeaturePlot'))
 
                                    
       ),
@@ -128,7 +128,7 @@ dashboardPage(
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        plotOutput("DimPlot")
+                        withSpinner(plotOutput("DimPlot"))
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
@@ -138,7 +138,7 @@ dashboardPage(
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
                             
-                            plotOutput("VlnPlot")
+                            withSpinner(plotOutput("VlnPlot"))
       ),
       
       tab_help <- tabItem(tabName = "help",
