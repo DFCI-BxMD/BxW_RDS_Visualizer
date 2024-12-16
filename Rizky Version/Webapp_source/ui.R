@@ -41,7 +41,7 @@ dashboardPage(
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
-                          withSpinner(shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE)),
+                          shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
                           verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
@@ -105,7 +105,10 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   withSpinner(plotOutput('FeaturePlot'))
+                                   div(
+                                    style = "height: 400px; overflow-y: scroll;",
+                                    withSpinner(plotOutput('FeaturePlot'))
+                                   )
 
                                    
       ),
@@ -128,7 +131,10 @@ dashboardPage(
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        withSpinner(plotOutput("DimPlot"))
+                        div(
+                          style = "height: 400px; overflow-y: scroll;",
+                          withSpinner(plotOutput("DimPlot"))
+                        )
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
@@ -137,8 +143,10 @@ dashboardPage(
                             selectInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
-                            
-                            withSpinner(plotOutput("VlnPlot"))
+                            div(
+                              style = "height: 400px; overflow-y: scroll;",
+                              withSpinner(plotOutput("VlnPlot"))
+                            )
       ),
       
       tab_help <- tabItem(tabName = "help",
