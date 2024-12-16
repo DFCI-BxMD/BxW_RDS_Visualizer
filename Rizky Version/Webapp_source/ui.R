@@ -106,7 +106,7 @@ dashboardPage(
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
                                    div(
-                                    style = "height: 400px; overflow-y: scroll;",
+                                    style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                                     withSpinner(plotOutput('FeaturePlot'))
                                    )
 
@@ -132,7 +132,7 @@ dashboardPage(
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
                         div(
-                          style = "height: 400px; overflow-y: scroll;",
+                          style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                           withSpinner(plotOutput("DimPlot"))
                         )
                          
@@ -144,7 +144,7 @@ dashboardPage(
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
                             div(
-                              style = "height: 400px; overflow-y: scroll;",
+                              style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                               withSpinner(plotOutput("VlnPlot"))
                             )
       ),
