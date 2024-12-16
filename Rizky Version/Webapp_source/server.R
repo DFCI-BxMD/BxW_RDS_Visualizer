@@ -13,7 +13,7 @@ library(ggplot2)
 
 function(input, output, session) {
 
-reactivevalue=reactiveValues(
+reactivevalue=reactiveValues(RDS_directory=NULL,
                              SeuratObject=NULL,
                              Loaded=F,
                              metadata=NULL,
@@ -22,22 +22,27 @@ reactivevalue=reactiveValues(
 shinyFileChoose(input, "files", roots=c(wd="/home/dnanexus/project/"), filetypes = c("", "rds"))
 
 observeEvent(input$files, {
-    # Parse the selected file path
-    fileinfo <- parseFilePaths(c(wd="/home/dnanexus/project/"), input$files)
-    selected_file <- as.character(fileinfo$datapath)
+  # Parse the selected file path
+  fileinfo <- parseFilePaths(c(wd = "/home/dnanexus/project/"), input$files)
+  selected_file <- as.character(fileinfo$datapath)
+  
+  # Check if a file was selected
+  if (length(selected_file) > 0 && file.exists(selected_file)) {
     
-    # Check if a file was selected
-    if (length(selected_file) > 0 && file.exists(selected_file)) {
-      # Load the selected RDS file
-      seurat_obj <- readRDS(selected_file)
-      reactivevalue$SeuratObject <- seurat_obj
-      
-      # Display the selected file path
-      output$loadedFile <- renderText({
-        paste("Loaded file:", selected_file)
-      })
-    }
-  })
+    # Store the file path in reactive values
+    reactivevalue$RDS_directory <- selected_file
+    
+    # Load the selected RDS file
+    seurat_obj <- readRDS(selected_file)
+    reactivevalue$SeuratObject <- seurat_obj
+    
+    output$loadedFile <- renderText({
+      paste("Loaded file:", selected_file)
+    })
+    
+    reactivevalue$Loaded <- FALSE
+  }
+})
 
 
 source('operator.R',local = T)

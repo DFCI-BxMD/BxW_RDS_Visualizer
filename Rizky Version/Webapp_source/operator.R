@@ -4,8 +4,9 @@
 
 
 
-observe(if (!reactivevalue$Loaded) {
+observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   print(reactivevalue$Loaded)
+  reactivevalue$SeuratObject=readRDS(reactivevalue$RDS_directory)
   reactivevalue$SeuratObject=UpdateSeuratObject(reactivevalue$SeuratObject)
   reactivevalue$metadata=reactivevalue$SeuratObject@meta.data
   DefaultAssay(reactivevalue$SeuratObject)='RNA'
