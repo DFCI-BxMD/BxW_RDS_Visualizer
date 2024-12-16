@@ -184,8 +184,8 @@ dashboardPage(
           br(),
         ),
         tags$img(
-          src ="https://raw.githubusercontent.com/DFCI-BxMD/BxW_RDS_Visualizer/main/Rizky%20Version/docs/new_DFCI_IA_logo.png",
-          style="display: block; margin-left: auto; margin-right: auto; width:35%; height:15%",
+          src ="https://raw.githubusercontent.com/tpathakdfci/Logo/main/Home%20_%20Informatics%20and%20Analytics.png",
+          style="display: block; margin-left: auto; margin-right: auto; width:10%; height:5%",
         )
         ),
     
