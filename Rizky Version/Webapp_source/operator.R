@@ -113,7 +113,7 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
     
   }
 
-  output$DimPlot=renderPlot(req(plot))
+  output$DimPlot=renderPlot(plot)
 })
 
 observe(plotDimplot())
@@ -123,11 +123,10 @@ output$downloadDimPlot <- downloadHandler(
   filename = function() {
     paste("Dim_plot", Sys.Date(), ".pdf", sep = "")
   },
-  content = function(file) {
-    pdf(file) 
-    print(plotDimPlot()) 
-    dev.off() 
-  })
+    content = function(file) {
+        pdf(file)
+        dev.off()
+    })
 
 
 
