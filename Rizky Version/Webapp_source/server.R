@@ -17,7 +17,8 @@ reactivevalue=reactiveValues(RDS_directory=NULL,
                              SeuratObject=NULL,
                              Loaded=F,
                              metadata=NULL,
-                             genes_name=NULL)
+                             genes_name=NULL,
+                             fileUploaded=FALSE)
 
 shinyFileChoose(input, "files", roots=c(wd="/home/dnanexus/project/"), filetypes = c("", "rds"))
 
@@ -35,6 +36,7 @@ observeEvent(input$files, {
     # Load the selected RDS file
     seurat_obj <- readRDS(selected_file)
     reactivevalue$SeuratObject <- seurat_obj
+    reactivevalue$fileUploaded <- TRUE
     
     output$loadedFile <- renderText({
       paste("Loaded file:", selected_file)

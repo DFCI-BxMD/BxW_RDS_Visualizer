@@ -98,7 +98,7 @@ observeEvent(BarGraphListener(),{
 
 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
-  if (reactivevalue$Loaded) {
+    if (req(reactivevalue$Loaded)) {
     if (input$DimPlot_split_by!=''){
       if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
         number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
@@ -113,10 +113,21 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
     
   }
 
-  output$DimPlot=renderPlot(plot)
+  output$DimPlot=renderPlot(req(plot))
 })
 
 observe(plotDimplot())
+
+# Download handler for the plot
+output$downloadDimPlot <- downloadHandler(
+  filename = function() {
+    paste("Dim_plot", Sys.Date(), ".pdf", sep = "")
+  },
+  content = function(file) {
+    pdf(file) 
+    print(plotDimPlot()) 
+    dev.off() 
+  })
 
 
 
@@ -124,23 +135,32 @@ observe(plotDimplot())
 
 
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
-  if (reactivevalue$Loaded) {
+  if (req(reactivevalue$Loaded)) {
     
   plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
   
-  output$FeaturePlot=renderPlot(plot)
+  output$FeaturePlot=renderPlot(req(plot))
   }
 })
 
 observe(plotFeaturePlot())
 
-
+# Download handler for the plot
+output$downloadFeaturePlot <- downloadHandler(
+  filename = function() {
+    paste("feature_plot", Sys.Date(), ".pdf", sep = "")
+  },
+  content = function(file) {
+    pdf(file) 
+    print(plotFeaturePlot()) 
+    dev.off() 
+  })
 
 
 
 
 plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
-  if (reactivevalue$Loaded) {
+  if (req(reactivevalue$Loaded)) {
     
   if (length(input$VlnPlot_GeneInput)>2) {
     number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
@@ -150,9 +170,19 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   }
   plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
   
-  output$VlnPlot=renderPlot(plot)
+  output$VlnPlot=renderPlot(req(plot))
   }
 })
 
 observe(plotVlnPlot())
 
+# Download handler for the plot
+output$downloadVlnPlot <- downloadHandler(
+  filename = function() {
+    paste("Violin_plot", Sys.Date(), ".pdf", sep = "")
+  },
+  content = function(file) {
+    pdf(file) 
+    print(plotVlnPlot()) 
+    dev.off() 
+  })

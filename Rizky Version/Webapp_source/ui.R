@@ -42,7 +42,7 @@ dashboardPage(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
                           shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
-                          verbatimTextOutput("loadedFile"),
+                          withSpinner(verbatimTextOutput("loadedFile")),
                           h2("Home Page"),
                           br(),
                           br(),
@@ -107,8 +107,9 @@ dashboardPage(
                                    br(),
                                    div(
                                     style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                                    withSpinner(plotOutput('FeaturePlot'))
-                                   )
+                                    withSpinner(plotOutput('FeaturePlot', height = "auto"))
+                                   ),
+                                   downloadButton("downloadFeaturePlot", "Download Plot")
 
                                    
       ),
@@ -125,7 +126,7 @@ dashboardPage(
                          br(),
                         # selectInput("variableInput", label = "Select a Group:",
                         #             choices = "Input File For Dropdown Options"),
-                        selectizeInput('DimPlot_split_by','Splity the DimPlots by: ',choices=NULL),
+                        selectizeInput('DimPlot_split_by','Split the DimPlots by: ',choices=NULL),
                         selectizeInput('DimPlot_reduction','Plot the DimPlots by : ',choices=NULL),
                         
                         br(),
@@ -133,8 +134,9 @@ dashboardPage(
                         br(),
                         div(
                           style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                          withSpinner(plotOutput("DimPlot"))
-                        )
+                          withSpinner(plotOutput("DimPlot", height = "auto"))
+                        ),
+                        downloadButton("downloadDimPlot", "Download Plot")
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
@@ -146,7 +148,8 @@ dashboardPage(
                             div(
                               style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                               withSpinner(plotOutput("VlnPlot"))
-                            )
+                            ),
+                            downloadButton("downloadViolinPlot", "Download Plot")
       ),
       
       tab_help <- tabItem(tabName = "help",
