@@ -125,7 +125,7 @@ output$downloadDimPlot <- downloadHandler(
   },
     content = function(file) {
         pdf(file)
-        replayPlot(plot)
+        print(plotDimplot())
         dev.off()
     })
 
@@ -152,7 +152,6 @@ output$downloadFeaturePlot <- downloadHandler(
   },
   content = function(file) {
         pdf(file)
-        replayPlot(plot)
         dev.off()
     })
 
@@ -183,6 +182,5 @@ output$downloadVlnPlot <- downloadHandler(
   },
   content = function(file) {
         pdf(file)
-        replayPlot(plot)
         dev.off()
     })
