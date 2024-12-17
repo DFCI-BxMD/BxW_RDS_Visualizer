@@ -107,7 +107,7 @@ dashboardPage(
                                    br(),
                                    div(
                                     style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                                    withSpinner(plotOutput('FeaturePlot', height = "auto"))
+                                    withSpinner(plotOutput('FeaturePlot'))
                                    ),
                                    downloadButton("downloadFeaturePlot", "Download Plot")
 
@@ -134,7 +134,7 @@ dashboardPage(
                         br(),
                         div(
                           style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                          withSpinner(plotOutput("DimPlot", height = "auto"))
+                          withSpinner(plotOutput("DimPlot"))
                         ),
                         downloadButton("downloadDimPlot", "Download Plot")
                          
