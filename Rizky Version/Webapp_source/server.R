@@ -33,6 +33,8 @@ observeEvent(input$files, {
   
   # Check if a file was selected
   if (length(selected_file) > 0 && file.exists(selected_file)) {
+
+    waitress$start()
     
     # Store the file path in reactive values
     reactivevalue$RDS_directory <- selected_file
@@ -41,17 +43,18 @@ observeEvent(input$files, {
     seurat_obj <- readRDS(selected_file)
     reactivevalue$SeuratObject <- seurat_obj
 
-    waitress$
-      auto(percent = 5, ms = 150)
-      
+    for(i in 1:10){
+      Sys.sleep(.5)
+      waitress$inc(10) 
+    }
     
     output$loadedFile <- renderText({
       paste("Loaded file:", selected_file)
     })
-
-    waitress$close()
     
     reactivevalue$Loaded <- FALSE
+
+    waitress$close()
 
    
   }
