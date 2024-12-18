@@ -39,6 +39,7 @@ dashboardPage(
     )
   ),
   dashboardBody(
+    useWaitress(color = "#0047AB"),
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
