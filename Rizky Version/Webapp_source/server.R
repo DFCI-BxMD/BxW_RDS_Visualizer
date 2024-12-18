@@ -3,7 +3,6 @@ base::options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
-library(shinydlplot)
 library(purrr)
 library(stringr)
 library(Seurat)

@@ -105,10 +105,7 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   div(
-                                    style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                                    plotOutput('FeaturePlot')
-                                   ),
+                                   plotOutput('FeaturePlot'),
                                    br(),
                                    shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
 
@@ -133,10 +130,7 @@ dashboardPage(
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        div(
-                          style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                          plotOutput("DimPlot")
-                        ),
+                        plotOutput("DimPlot"),
                         br(),
                         shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
@@ -147,12 +141,9 @@ dashboardPage(
                             selectInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
-                            div(
-                              style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                              plotOutput("VlnPlot")
-                            ),
+                            plotOutput("VlnPlot"),
                             br(),
-                            shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
+                            shinySaveButton("saveVioliPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
       ),
       
       tab_help <- tabItem(tabName = "help",
