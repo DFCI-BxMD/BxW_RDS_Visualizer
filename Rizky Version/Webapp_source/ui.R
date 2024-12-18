@@ -109,7 +109,8 @@ dashboardPage(
                                     style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                                     withSpinner(plotOutput('FeaturePlot'))
                                    ),
-                                   downloadButton("downloadFeaturePlot", "Download Plot")
+                                   br(),
+                                   downloadButton("downloadFeaturePlot", "Download Plot as PDF")
 
                                    
       ),
@@ -136,7 +137,8 @@ dashboardPage(
                           style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                           withSpinner(plotOutput("DimPlot"))
                         ),
-                        downloadButton("downloadDimPlot", "Download Plot")
+                        br(),
+                        shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
@@ -149,7 +151,8 @@ dashboardPage(
                               style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
                               withSpinner(plotOutput("VlnPlot"))
                             ),
-                            downloadButton("downloadViolinPlot", "Download Plot")
+                            br(),
+                            downloadButton("downloadViolinPlot", "Download Plot as PDF")
       ),
       
       tab_help <- tabItem(tabName = "help",
