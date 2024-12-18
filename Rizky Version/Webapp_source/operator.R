@@ -99,8 +99,7 @@ observeEvent(BarGraphListener(),{
 
 ## Dim Plot 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
-    req(reactivevalue$Loaded)
-    reactivevalue$dimPlotGenerated <- TRUE 
+    if (reactivevalue$Loaded) {
     if (input$DimPlot_split_by!=''){
       if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
         number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
@@ -113,7 +112,7 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
       plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
     }
     
-  
+  }
 
   output$DimPlot=renderPlot(plot)
   reactivevalue$dimPlot = plot

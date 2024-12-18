@@ -42,7 +42,7 @@ dashboardPage(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
                           shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
-                          withSpinner(verbatimTextOutput("loadedFile")),
+                          verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
                           br(),
@@ -107,10 +107,10 @@ dashboardPage(
                                    br(),
                                    div(
                                     style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                                    withSpinner(plotOutput('FeaturePlot'))
+                                    plotOutput('FeaturePlot')
                                    ),
                                    br(),
-                                   downloadButton("downloadFeaturePlot", "Download Plot as PDF")
+                                   shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
 
                                    
       ),
@@ -135,7 +135,7 @@ dashboardPage(
                         br(),
                         div(
                           style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                          withSpinner(plotOutput("DimPlot"))
+                          plotOutput("DimPlot")
                         ),
                         br(),
                         shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
@@ -149,10 +149,10 @@ dashboardPage(
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
                             div(
                               style = "width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;",
-                              withSpinner(plotOutput("VlnPlot"))
+                              plotOutput("VlnPlot")
                             ),
                             br(),
-                            downloadButton("downloadViolinPlot", "Download Plot as PDF")
+                            shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
       ),
       
       tab_help <- tabItem(tabName = "help",

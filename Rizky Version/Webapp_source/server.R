@@ -18,11 +18,8 @@ reactivevalue=reactiveValues(RDS_directory=NULL,
                              SeuratObject=NULL,
                              Loaded=F,
                              metadata=NULL,
-                             genes_name=NULL,
-                             fileUploaded=FALSE,
-                             dimPlotGenerated = FALSE,
-                             featurePlotGenerated = FALSE, 
-                             vlnPlotGenerated = FALSE)
+                             genes_name=NULL
+                             )
 
 shinyFileChoose(input, "files", roots=c(wd="/home/dnanexus/project/"), filetypes = c("", "rds"))
 
@@ -45,8 +42,7 @@ observeEvent(input$files, {
       paste("Loaded file:", selected_file)
     })
     
-    reactivevalue$Loaded <- TRUE
-    reactivevalue$fileUploaded <- TRUE
+    reactivevalue$Loaded <- FALSE
   }
 })
 
