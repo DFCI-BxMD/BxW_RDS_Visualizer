@@ -21,9 +21,12 @@ reactivevalue=reactiveValues(RDS_directory=NULL,
                              genes_name=NULL
                              )
 
+waitress <- Waitress$new(theme = "overlay-percent")
+
 shinyFileChoose(input, "files", roots=c(wd="/home/dnanexus/project/"), filetypes = c("", "rds"))
 
 observeEvent(input$files, {
+  waitress$start()
   # Parse the selected file path
   fileinfo <- parseFilePaths(c(wd = "/home/dnanexus/project/"), input$files)
   selected_file <- as.character(fileinfo$datapath)
@@ -43,6 +46,8 @@ observeEvent(input$files, {
     })
     
     reactivevalue$Loaded <- FALSE
+
+    waitress$close()
   }
 })
 
