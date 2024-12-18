@@ -26,7 +26,7 @@ waitress <- Waitress$new(theme = "overlay-percent")
 shinyFileChoose(input, "files", roots=c(wd="/home/dnanexus/project/"), filetypes = c("", "rds"))
 
 observeEvent(input$files, {
-  waitress$start()
+
   # Parse the selected file path
   fileinfo <- parseFilePaths(c(wd = "/home/dnanexus/project/"), input$files)
   selected_file <- as.character(fileinfo$datapath)
@@ -40,14 +40,21 @@ observeEvent(input$files, {
     # Load the selected RDS file
     seurat_obj <- readRDS(selected_file)
     reactivevalue$SeuratObject <- seurat_obj
+
+    for(i in 1:10){
+      waitress$inc(1) # increase by 10%
+      Sys.sleep(.5)
+    }
     
     output$loadedFile <- renderText({
       paste("Loaded file:", selected_file)
     })
+
+    waitress$close()
     
     reactivevalue$Loaded <- FALSE
 
-    waitress$close()
+   
   }
 })
 
