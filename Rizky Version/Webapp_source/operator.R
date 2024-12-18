@@ -97,6 +97,7 @@ observeEvent(BarGraphListener(),{
 })
 
 
+## Dim Plot 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
     if (reactivevalue$Loaded) {
     if (input$DimPlot_split_by!=''){
@@ -119,22 +120,20 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
 
 observe(plotDimplot())
 
-# Download handler for the plot
-output$downloadDimPlot <- downloadHandler(
-  filename = function() {
-    paste("Dim_plot", Sys.Date(), ".pdf", sep = "")
-  },
-    content = function(file) {
-        pdf(file)
+# Save the plot in mounted project
+shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveDimPlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveDimPlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
         print(reactivevalue$dimPlot)
         dev.off()
+    }
     })
+    
 
 
-
-
-
-
+## Feature Plot
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     
