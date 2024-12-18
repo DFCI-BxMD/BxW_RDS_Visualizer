@@ -99,7 +99,8 @@ observeEvent(BarGraphListener(),{
 
 ## Dim Plot 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
-    if (reactivevalue$Loaded) {
+    req(reactivevalue$Loaded)
+    reactivevalue$dimPlotGenerated <- TRUE 
     if (input$DimPlot_split_by!=''){
       if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
         number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
@@ -112,7 +113,7 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
       plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
     }
     
-  }
+  
 
   output$DimPlot=renderPlot(plot)
   reactivevalue$dimPlot = plot
@@ -147,15 +148,14 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
 
 observe(plotFeaturePlot())
 
-# Download handler for the plot
-output$downloadFeaturePlot <- downloadHandler(
-  filename = function() {
-    paste("feature_plot", Sys.Date(), ".pdf", sep = "")
-  },
-  content = function(file) {
-        pdf(file)
+shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveFeaturePlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveFeaturePlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
         print(reactivevalue$featurePlot)
         dev.off()
+    }
     })
 
 
@@ -179,13 +179,12 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
 
 observe(plotVlnPlot())
 
-# Download handler for the plot
-output$downloadVlnPlot <- downloadHandler(
-  filename = function() {
-    paste("Violin_plot", Sys.Date(), ".pdf", sep = "")
-  },
-  content = function(file) {
-        pdf(file)
+shinyFileSave(input, "saveViolinPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveViolinPlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveViolinPlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
         print(reactivevalue$VlnPlot)
         dev.off()
+    }
     })
