@@ -9,7 +9,7 @@ library(Seurat)
 library(DT)
 library(shinyalert)
 library(ggplot2)
-library(waitress)
+library(waiter)
 
 
 function(input, output, session) {
