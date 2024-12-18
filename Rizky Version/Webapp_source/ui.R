@@ -13,6 +13,7 @@ library(Seurat)
 library(DT)
 library(shinyalert)
 library(ggplot2)
+library(waitress)
 
 
 #########           UI START          ##########

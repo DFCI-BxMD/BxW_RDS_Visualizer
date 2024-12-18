@@ -1,7 +1,7 @@
 #### Check if Seurat Object exist and whether it is loaded: if yes and no, load, if yes and no, stop, if no and no, stop.####
 
 
-
+waitress <- Waitress$new(theme = "overlay-percent")
 
 
 observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
@@ -100,17 +100,19 @@ observeEvent(BarGraphListener(),{
 ## Dim Plot 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
     if (reactivevalue$Loaded) {
-    if (input$DimPlot_split_by!=''){
-      if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
-        number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
-      } else {
-        number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
-      }
-      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
-                             ncol = number_col,reduction = input$DimPlot_reduction))
-    } else {
-      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
-    }
+        waitress$start() 
+        if (input$DimPlot_split_by!=''){
+            if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
+                number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
+            } else {
+                number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
+            }
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
+                                    ncol = number_col,reduction = input$DimPlot_reduction))
+            } else {
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
+        }
+        waitress$close()
     
   }
 
