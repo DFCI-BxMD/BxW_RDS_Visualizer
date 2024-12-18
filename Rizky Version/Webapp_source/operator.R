@@ -114,6 +114,7 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
   }
 
   output$DimPlot=renderPlot(plot)
+  reactivevalue$dimPlot = plot
 })
 
 observe(plotDimplot())
@@ -125,7 +126,7 @@ output$downloadDimPlot <- downloadHandler(
   },
     content = function(file) {
         pdf(file)
-        print(plotDimplot())
+        print(reactivevalue$dimPlot)
         dev.off()
     })
 
@@ -140,6 +141,8 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
   
   output$FeaturePlot=renderPlot(plot)
+
+  reactivevalue$featurePlot = plot
   }
 })
 
@@ -152,6 +155,7 @@ output$downloadFeaturePlot <- downloadHandler(
   },
   content = function(file) {
         pdf(file)
+        print(reactivevalue$featurePlot)
         dev.off()
     })
 
@@ -170,6 +174,7 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
   
   output$VlnPlot=renderPlot(plot)
+  reactivevalue$VlnPlot = plot
   }
 })
 
@@ -182,5 +187,6 @@ output$downloadVlnPlot <- downloadHandler(
   },
   content = function(file) {
         pdf(file)
+        print(reactivevalue$VlnPlot)
         dev.off()
     })
