@@ -138,12 +138,15 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 ## Feature Plot
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
+    waitress$start()
     
-  plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
-  
-  output$FeaturePlot=renderPlot(plot)
+    plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    
+    output$FeaturePlot=renderPlot(plot)
 
-  reactivevalue$featurePlot = plot
+    reactivevalue$featurePlot = plot
+
+    waitress$close()
   }
 })
 
@@ -164,14 +167,16 @@ shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), 
 
 plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   if (reactivevalue$Loaded) {
-    
-  if (length(input$VlnPlot_GeneInput)>2) {
-    number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
-  } else {
-    number_of_cols=length(input$VlnPlot_GeneInput)
-    
-  }
+    waitress$start()
+    if (length(input$VlnPlot_GeneInput)>2) {
+      number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
+    } else {
+      number_of_cols=length(input$VlnPlot_GeneInput)
+      
+    }
   plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
+  
+  waitress$close()
   
   output$VlnPlot=renderPlot(plot)
   reactivevalue$VlnPlot = plot

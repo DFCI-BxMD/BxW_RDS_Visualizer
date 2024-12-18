@@ -41,10 +41,9 @@ observeEvent(input$files, {
     seurat_obj <- readRDS(selected_file)
     reactivevalue$SeuratObject <- seurat_obj
 
-    for(i in 1:10){
-      waitress$inc(1) # increase by 10%
-      Sys.sleep(.5)
-    }
+    waitress$
+      auto(percent = 5, ms = 150)
+      
     
     output$loadedFile <- renderText({
       paste("Loaded file:", selected_file)
