@@ -132,10 +132,7 @@ dashboardPage(
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        div(
-                          style = "height: 400px; overflow-y: scroll;",
-                          plotOutput("DimPlot", height = "auto")
-                        ),
+                        plotOutput("DimPlot"),
                         br(),
                         shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
