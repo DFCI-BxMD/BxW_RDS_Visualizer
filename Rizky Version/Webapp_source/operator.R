@@ -176,12 +176,13 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
     }
   plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
   
+  output$VlnPlot=renderPlot(plot)
+  reactivevalue$VlnPlot = plot
+
   waitress$close()
   
   }
-  output$VlnPlot=renderPlot(plot)
-  reactivevalue$VlnPlot = plot
-  
+ 
 })
 
 observe(plotVlnPlot())
