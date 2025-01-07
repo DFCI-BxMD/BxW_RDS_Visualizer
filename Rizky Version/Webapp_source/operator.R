@@ -167,19 +167,23 @@ shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), 
 
 plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   if (reactivevalue$Loaded) {
-
-    if (length(input$VlnPlot_GeneInput)>2) {
-      number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
-    } else {
-      number_of_cols=length(input$VlnPlot_GeneInput)
-      
-    }
-  plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
-  
-  output$VlnPlot=renderPlot(plot)
-  reactivevalue$VlnPlot = plot
-  
+  if (length(input$VlnPlot_GeneInput) > 2) {
+    number_col = round(sqrt(length(input$VlnPlot_GeneInput)))
+  } else {
+    number_col = length(input$VlnPlot_GeneInput)
   }
+  plot = VlnPlot(
+    reactivevalue$SeuratObject,
+    features = input$VlnPlot_GeneInput,
+    group.by = input$VlnPlot_group_by,
+    ncol = number_col,
+    same.y.lims = TRUE,
+    raster = TRUE
+  )
+}
+
+output$VlnPlot = renderPlot(plot)
+reactivevalue$VlnPlot = plot
  
 })
 
