@@ -98,7 +98,7 @@ dashboardPage(
                       )
   ),
       tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
-                                   h2("Feature Plot Page"),
+                                   h2("Feature Plot"),
 
                                    br(),
                                    p("Enter the gene of interest and color the selected dimension reduction with its expression"),
@@ -138,14 +138,14 @@ dashboardPage(
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
-                            h2("Violin Plot Page"),
+                            h2("Violin Plot"),
                             br(),
                             selectInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
                             plotOutput("VlnPlot"),
                             br(),
-                            shinySaveButton("saveVioliPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
+                            shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
       ),
       
       tab_help <- tabItem(tabName = "help",
