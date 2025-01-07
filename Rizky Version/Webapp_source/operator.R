@@ -178,9 +178,10 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   
   waitress$close()
   
+  }
   output$VlnPlot=renderPlot(plot)
   reactivevalue$VlnPlot = plot
-  }
+  
 })
 
 observe(plotVlnPlot())
