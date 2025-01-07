@@ -167,7 +167,7 @@ shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), 
 
 plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   if (reactivevalue$Loaded) {
-    waitress$start()
+
     if (length(input$VlnPlot_GeneInput)>2) {
       number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
     } else {
@@ -178,8 +178,6 @@ plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
   
   output$VlnPlot=renderPlot(plot)
   reactivevalue$VlnPlot = plot
-
-  waitress$close()
   
   }
  
