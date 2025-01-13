@@ -165,7 +165,7 @@ shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), 
 
 
 ## Violin Plot
-plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
+plotVlnplot=eventReactive(input$plotVlnPlot_Button, {
   if (reactivevalue$Loaded) {
   if (length(input$VlnPlot_GeneInput) > 2) {
     number_col = round(sqrt(length(input$VlnPlot_GeneInput)))
@@ -187,7 +187,7 @@ reactivevalue$vlnPlot = plot
  
 })
 
-observe(plotVlnPlot())
+observe(plotVlnplot())
 
 shinyFileSave(input, "saveViolinPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
   observeEvent(input$saveViolinPlot, {
