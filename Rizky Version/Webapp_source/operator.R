@@ -177,7 +177,8 @@ plotVlnplot=eventReactive(input$plotVlnPlot_Button, {
     features = input$VlnPlot_GeneInput,
     group.by = input$VlnPlot_group_by,
     ncol = number_col,
-    same.y.lims = TRUE
+    same.y.lims = TRUE,
+    raster = TRUE
   )
 }
 
