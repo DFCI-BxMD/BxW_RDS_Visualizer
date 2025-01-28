@@ -10,6 +10,9 @@ library(DT)
 library(shinyalert)
 library(ggplot2)
 library(waiter)
+library(tiledb)
+library(tiledbsoma)
+
 
 
 function(input, output, session) {

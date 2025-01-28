@@ -14,6 +14,13 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   reactivevalue$genes_name=rownames(reactivevalue$SeuratObject)
   
   reactivevalue$reduction=names((reactivevalue$SeuratObject@reductions))
+
+
+  # Convert Seurat object to soma experiment
+
+  EXPERIMENT_URI <- sprintf("dx://project-xxxx:/path/to/file")
+  write_soma(reactivevalue$SeuratObject, uri = EXPERIMENT_URI)
+
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
   
@@ -108,9 +115,9 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
                 number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
             }
             plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
-                                    ncol = number_col,reduction = input$DimPlot_reduction))
+                                    ncol = number_col,reduction = input$DimPlot_reduction) + coord_fixed())
             } else {
-            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction) + coord_fixed())
         }
         waitress$close()
     
