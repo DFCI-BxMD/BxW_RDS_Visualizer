@@ -41,12 +41,6 @@ dashboardPage(
   dashboardBody(
     useWaitress(color = "#0047AB"),
 
-    tags$style(HTML("
-        .scrollable-plot {
-          max-height: 500px;  
-          overflow-y: auto;   
-        }
-      "))
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
@@ -114,9 +108,6 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   div(class = "scrollable-plot", 
-                                       plotOutput('FeaturePlot')
-                                   ),
                                    plotOutput('FeaturePlot'),
                                    br(),
                                    shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
