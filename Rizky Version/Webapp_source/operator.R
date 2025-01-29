@@ -143,13 +143,13 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 
 
 ## Feature Plot
-ranges <- reactiveValues(x = NULL, y = NULL)
+featureplot_ranges <- reactiveValues(x = NULL, y = NULL)
 
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T) + coord_cartesian(xlim = featureplot_ranges$x, ylim = featureplot_ranges$y, expand = FALSE)
     
     output$FeaturePlot=renderPlot(plot)
 
