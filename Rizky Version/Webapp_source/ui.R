@@ -14,6 +14,7 @@ library(DT)
 library(shinyalert)
 library(ggplot2)
 library(waiter)
+library(ggplotify)
 
 
 #########           UI START          ##########
