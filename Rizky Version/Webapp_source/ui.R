@@ -108,7 +108,7 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   plotOutput('FeaturePlot'),
+                                   plotOutput('FeaturePlot', height = 700,  dblclick = "feature_dblclick", brush = brushOpts(id = "feature_brush", resetOnNew = TRUE)),
                                    br(),
                                    shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
 

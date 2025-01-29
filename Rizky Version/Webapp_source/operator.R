@@ -143,6 +143,8 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 
 
 ## Feature Plot
+ranges <- reactiveValues(x = NULL, y = NULL)
+
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
@@ -158,6 +160,19 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
 })
 
 observe(plotFeaturePlot())
+
+# Zoom with double click and select
+observeEvent(input$feature_dblclick, {
+    brush <- input$feature_brush
+    if (!is.null(brush)) {
+      ranges$x <- c(brush$xmin, brush$xmax)
+      ranges$y <- c(brush$ymin, brush$ymax)
+
+    } else {
+      ranges$x <- NULL
+      ranges$y <- NULL
+    }
+  })
 
 shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
   observeEvent(input$saveFeaturePlot, {
