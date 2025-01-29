@@ -149,7 +149,7 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T) & xlim = featureplot_ranges$x & ylim = featureplot_ranges$y
+    plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T) & xlim(featureplot_ranges$x) & ylim(featureplot_ranges$y)
     
     output$FeaturePlot=renderPlot(plot)
 
