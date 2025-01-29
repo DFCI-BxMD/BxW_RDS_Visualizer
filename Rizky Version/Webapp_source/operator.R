@@ -153,10 +153,10 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
     zoomed_plots = lapply(plot_list, function(p) {
         p + coord_cartesian(xlim = featureplot_ranges$x, ylim = featureplot_ranges$y, expand = FALSE)
       })
-    plot = wrap_plots(zoomed_plots)
-    output$FeaturePlot=renderPlot(plot)
+    
+    output$FeaturePlot=renderPlot(zoomed_plots)
 
-    reactivevalue$featurePlot = plot
+    reactivevalue$featurePlot = zoomed_plots
 
     waitress$close()
   }
