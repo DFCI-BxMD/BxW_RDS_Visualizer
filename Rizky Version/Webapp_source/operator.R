@@ -165,12 +165,12 @@ observe(plotFeaturePlot())
 observeEvent(input$feature_dblclick, {
     brush <- input$feature_brush
     if (!is.null(brush)) {
-      ranges$x <- c(brush$xmin, brush$xmax)
-      ranges$y <- c(brush$ymin, brush$ymax)
+      featureplot_ranges$x <- c(brush$xmin, brush$xmax)
+      featureplot_ranges$y <- c(brush$ymin, brush$ymax)
 
     } else {
-      ranges$x <- NULL
-      ranges$y <- NULL
+      featureplot_ranges$x <- NULL
+      featureplot_ranges$y <- NULL
     }
   })
 
