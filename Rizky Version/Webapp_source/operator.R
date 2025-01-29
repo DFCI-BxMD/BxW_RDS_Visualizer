@@ -149,14 +149,15 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plot_list=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    plot_init=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    plot_list = plot_init$plots
     zoomed_plots = lapply(plot_list, function(p) {
         p + coord_cartesian(xlim = featureplot_ranges$x, ylim = featureplot_ranges$y, expand = FALSE)
       })
-    
-    output$FeaturePlot=renderPlot(zoomed_plots)
+    plot = wrap_plots(zoomed_plots)
+    output$FeaturePlot=renderPlot(plot)
 
-    reactivevalue$featurePlot = zoomed_plots
+    reactivevalue$featurePlot = plot
 
     waitress$close()
   }
