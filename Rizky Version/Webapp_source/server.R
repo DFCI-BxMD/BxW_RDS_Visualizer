@@ -12,6 +12,7 @@ library(ggplot2)
 library(waiter)
 library(tiledb)
 library(tiledbsoma)
+library(ggplotify)
 
 
 
