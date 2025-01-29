@@ -18,8 +18,8 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
 
   # Convert Seurat object to soma experiment
 
-  EXPERIMENT_URI <- sprintf("dx://project-xxxx:/path/to/file")
-  write_soma(reactivevalue$SeuratObject, uri = EXPERIMENT_URI)
+  # EXPERIMENT_URI <- sprintf("dx://project-xxxx:/path/to/file")
+  # write_soma(reactivevalue$SeuratObject, uri = EXPERIMENT_URI)
 
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
