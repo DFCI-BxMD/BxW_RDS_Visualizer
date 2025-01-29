@@ -13,6 +13,7 @@ library(waiter)
 library(tiledb)
 library(tiledbsoma)
 library(ggplotify)
+library(patchwork)
 
 
 
