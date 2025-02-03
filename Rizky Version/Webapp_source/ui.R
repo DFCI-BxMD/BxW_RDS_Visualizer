@@ -151,7 +151,11 @@ dashboardPage(
                             selectizeInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
-                            plotOutput("VlnPlot"),
+                            br(),
+                            div(  
+                                     plotOutput("VlnPlot", height = "2000px"), 
+                                     style = "overflow-y: scroll; height: 800px;" 
+                                   ),
                             br(),
                             shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
       ),
