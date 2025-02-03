@@ -120,16 +120,6 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
             plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction) + coord_fixed())
         }
 
-        # Get the axis limits
-        xlims <- layer_data(plot)[[1]]$x
-        ylims <- layer_data(plot)[[1]]$y
-
-        # Calculate the aspect ratio
-        range_x <- diff(range(xlims))
-        range_y <- diff(range(ylims))
-        aspect_ratio <- range_y / range_x
-
-        plot <- plot + coord_fixed(ratio = aspect_ratio)
         waitress$close()
     
   }
