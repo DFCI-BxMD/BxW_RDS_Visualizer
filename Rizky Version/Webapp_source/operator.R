@@ -143,40 +143,23 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 
 
 ## Feature Plot
-featureplot_ranges <- reactiveValues(x = NULL, y = NULL)
-
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plot_init=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
-    plot_list = plot_init$plots
-    zoomed_plots = lapply(plot_list, function(p) {
-        p + coord_cartesian(xlim = featureplot_ranges$x, ylim = featureplot_ranges$y, expand = FALSE)
-      })
-    plot = wrap_plots(zoomed_plots)
-    output$FeaturePlot=renderPlot(plot)
-
-    reactivevalue$featurePlot = plot
-
+    plots=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    
+    as_grob(plots)
+    
+    output$FeaturePlot=renderPlot(plots)
+    reactivevalue$featurePlot = plots
+    
     waitress$close()
   }
 })
 
+
 observe(plotFeaturePlot())
-
-# Zoom with double click and select
-observeEvent(input$feature_dblclick, {
-    brush <- input$feature_brush
-    if (!is.null(brush)) {
-      featureplot_ranges$x <- c(brush$xmin, brush$xmax)
-      featureplot_ranges$y <- c(brush$ymin, brush$ymax)
-
-    } else {
-      featureplot_ranges$x <- NULL
-      featureplot_ranges$y <- NULL
-    }
-  })
 
 shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
   observeEvent(input$saveFeaturePlot, {

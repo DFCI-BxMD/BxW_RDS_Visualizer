@@ -14,7 +14,7 @@ library(DT)
 library(shinyalert)
 library(ggplot2)
 library(waiter)
-library(ggplotify)
+library(cowplot)
 library(patchwork)
 
 
@@ -110,7 +110,10 @@ dashboardPage(
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   plotOutput('FeaturePlot', height = 700,  dblclick = "feature_dblclick", brush = brushOpts(id = "feature_brush", resetOnNew = TRUE)),
+                                   div(  
+                                     plotOutput("FeaturePlot", height = "2000px"), 
+                                     style = "overflow-y: scroll; height: 800px;" 
+                                   ),
                                    br(),
                                    shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
 
