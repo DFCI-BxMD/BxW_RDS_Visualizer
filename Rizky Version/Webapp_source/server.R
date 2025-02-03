@@ -14,6 +14,8 @@ library(tiledb)
 library(tiledbsoma)
 library(ggplotify)
 library(patchwork)
+library(qs) 
+library(future)
 
 
 
@@ -45,7 +47,7 @@ observeEvent(input$files, {
     reactivevalue$RDS_directory <- selected_file
     
     # Load the selected RDS file
-    seurat_obj <- readRDS(selected_file)
+    seurat_obj <- qread(selected_file)
     reactivevalue$SeuratObject <- seurat_obj
 
     for(i in 1:10){

@@ -16,6 +16,8 @@ library(ggplot2)
 library(waiter)
 library(cowplot)
 library(patchwork)
+library(qs) 
+library(future)
 
 
 #########           UI START          ##########
