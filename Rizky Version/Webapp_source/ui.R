@@ -25,7 +25,7 @@ library(future)
 # fully defined ui
 dashboardPage(
       # webapp layout #
-      dashboardHeader(title = "RDS Visualizer v1.1", 
+      dashboardHeader(title = "RDS Visualizer v2.1", 
                         tags$li(
                             class = "dropdown", 
                             style = "padding-top: 0px;",
@@ -53,7 +53,7 @@ dashboardPage(
                           h2("Home Page"),
                           br(),
                           br(),
-                          p("Welcome to the RDS Visualizer Web App (v1.1)!"),
+                          p("Welcome to the RDS Visualizer Web App (v2.1)!"),
                           br(),
                           p("This web app is designed for the visualization and exploration of single-cell RNA-seq data contained in Seurat objects. 
                              It will provide various plots and features to help you analyze and gain insights from your data. 
@@ -113,7 +113,7 @@ dashboardPage(
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
                                    div(  
-                                     plotOutput("FeaturePlot", height = "2000px"), 
+                                     plotOutput("FeaturePlot", height = "1000px"), 
                                      style = "overflow-y: scroll; height: 800px;" 
                                    ),
                                    br(),
@@ -153,7 +153,7 @@ dashboardPage(
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
                             br(),
                             div(  
-                                     plotOutput("VlnPlot", height = "2000px"), 
+                                     plotOutput("VlnPlot", height = "1000px"), 
                                      style = "overflow-y: scroll; height: 800px;" 
                                    ),
                             br(),
