@@ -140,7 +140,7 @@ dashboardPage(
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        plotOutput("DimPlot"),
+                        plotOutput("DimPlot", height="1000px"),
                         br(),
                         shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
