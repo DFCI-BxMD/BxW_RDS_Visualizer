@@ -102,62 +102,113 @@ dashboardPage(
                         )
                       )
   ),
-      tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
-                                   h2("Feature Plot"),
-
-                                   br(),
-                                   p("Enter the gene of interest and color the selected dimension reduction with its expression"),
-                                   br(),
-                                   selectizeInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
-                                   selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
-                                   actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
-                                   br(),
-                                   div(  
-                                     plotOutput("FeaturePlot", height = "1000px"), 
-                                     style = "overflow-y: scroll; height: 800px;" 
-                                   ),
-                                   br(),
-                                   shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
-
-                                   
-      ),
-      tab_dim <- tabItem(tabName = "DimPlot",
-                         h2("Dim Plot"),
-                         br(),
-                         p("This page generates DimPlots that can be split by different groups 
+  tab_dim <- tabItem(tabName = "DimPlot",
+                     h2("Dim Plot"),
+                     #br(),
+                     p("This page generates DimPlots that can be split by different groups 
                            found in a dropdown that updates based on the metadata columns in 
                            the uploaded Seurat object. By default, the Dimplot will not be split by a group. 
                            To split the visualization by a group, toggle the checkbox and select a group from the dropdown."),
-                         br(),
-                         #checkboxInput("splitToggle", "Split Dim Plot", value = FALSE),
-                         selectizeInput('DimPlot_group_by','Color the DimPlots by: ',choices=NULL),
-                         br(),
-                        # selectInput("variableInput", label = "Select a Group:",
-                        #             choices = "Input File For Dropdown Options"),
-                        selectizeInput('DimPlot_split_by','Split the DimPlots by: ',choices=NULL),
-                        selectizeInput('DimPlot_reduction','Plot the DimPlots by : ',choices=NULL),
-                        
-                        br(),
-                        actionButton("plotDimPlot_Button","Generate DimPlot"),
-                        br(),
-                        plotOutput("DimPlot", height="1000px"),
-                        br(),
-                        shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
-                         
+                     br(),
+                     #checkboxInput("splitToggle", "Split Dim Plot", value = FALSE),
+                     selectizeInput('DimPlot_group_by','Color the DimPlots by: ',choices=NULL),
+                     br(),
+                     # selectInput("variableInput", label = "Select a Group:",
+                     #             choices = "Input File For Dropdown Options"),
+                     selectizeInput('DimPlot_split_by','Split the DimPlots by: ',choices=NULL),
+                     selectizeInput('DimPlot_reduction','Plot the DimPlots by : ',choices=NULL),
+                     
+                     br(),
+                     actionButton("plotDimPlot_Button","Generate DimPlot"),
+                     br(),
+                     plotOutput("DimPlot", height="1000px"),
+                     br(),
+                     shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
+                     
+  ),
+      tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
+                                   h2('Feature Plot'),
+                                   tabsetPanel(
+                                     tabPanel(
+                                      "Gene Expression Feature Plot",
+                                       
+                                       br(),
+                                       p("Enter the gene of interest and color the selected dimension reduction with its expression"),
+                                       br(),
+                                       selectizeInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
+                                       #selectizeInput("FeaturePlot_MetaInput", "Select Numerical Metadata Column:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
+                                       
+                                       selectizeInput("GeneFeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
+                                       actionButton('plotGeneFeaturePlot_Button','Plot FeaturePlot'),
+                                       br(),
+                                       div(  
+                                         plotOutput("GeneFeaturePlot", height = "1000px"), 
+                                         style = "overflow-y: scroll; height: 800px;" 
+                                       ),
+                                       br(),
+                                       shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
+                                     ),
+                                     tabPanel(
+                                       "Metadata Feature Plot",
+                                       
+                                       br(),
+                                       p("Enter the numerical metadata of interest and color the selected dimension reduction with its values"),
+                                       br(),
+                                       #selectizeInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
+                                       selectizeInput("FeaturePlot_MetaInput", "Select Numerical Metadata Column:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
+                                       
+                                       selectizeInput("MetaFeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
+                                       actionButton('plotMetaFeaturePlot_Button','Plot FeaturePlot'),
+                                       br(),
+                                       div(  
+                                         plotOutput("MetaFeaturePlot", height = "1000px"), 
+                                         style = "overflow-y: scroll; height: 800px;" 
+                                       ),
+                                       br(),
+                                       shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
+                                       
+                                       
+                                     )
+                                   )
+
+                                   
       ),
+
       tab_violin <- tabItem(tabName = "VlnPlot",
                             h2("Violin Plot"),
-                            br(),
-                            selectizeInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
-                            selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
-                            actionButton("plotVlnPlot_Button","Generate Violin Plot"),
-                            br(),
-                            div(  
-                                     plotOutput("VlnPlot", height = "1000px"), 
-                                     style = "overflow-y: scroll; height: 800px;" 
-                                   ),
-                            br(),
-                            shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
+                            tabsetPanel(
+                              tabPanel(
+                                "Gene Expression Violin Plot",
+                                br(),
+                                p("Generate Violin Plots based on selected genes and groups"),
+                                selectizeInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
+                                selectizeInput('GeneVlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
+                                actionButton("plotGeneVlnPlot_Button","Generate Violin Plot"),
+                                br(),
+                                div(  
+                                  plotOutput("GeneVlnPlot", height = "1000px"), 
+                                  style = "overflow-y: scroll; height: 800px;" 
+                                ),
+                                br(),
+                                shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
+                              ),
+                              tabPanel(
+                                "Metadata Violin Plot",
+                                br(),
+                                p("Generate Violin Plots based on selected metadata values and groups"),
+                                selectizeInput("VlnPlot_MetaInput", "Select Numerical Metadata Column:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
+                                selectizeInput('MetaVlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
+                                actionButton("plotMetaVlnPlot_Button","Generate Violin Plot"),
+                                br(),
+                                div(  
+                                  plotOutput("MetaVlnPlot", height = "1000px"), 
+                                  style = "overflow-y: scroll; height: 800px;" 
+                                ),
+                                br(),
+                                shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
+                              ),
+                              )
+
       ),
       
       tab_help <- tabItem(tabName = "help",
