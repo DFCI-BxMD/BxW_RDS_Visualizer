@@ -71,8 +71,8 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   # Feature Plots
   updateSelectizeInput(session = session,inputId = 'FeaturePlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
   updateSelectizeInput(session = session,inputId = 'FeaturePlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
-  updateSelectizeInput(session = session,inputId = 'GeneFeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
-  updateSelectizeInput(session = session,inputId = 'MetaFeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'GeneFeaturePlot_reduction',choices=reactivevalue$reduction,selected = "umap",server = T)
+  updateSelectizeInput(session = session,inputId = 'MetaFeaturePlot_reduction',choices=reactivevalue$reduction,selected = "umap",server = T)
   
   updateSelectizeInput(session = session,inputId = 'DimPlot_group_by',choices =Bar_Graph_Columns,selected = NULL,server=T)
   updateSelectizeInput(session = session,inputId = 'DimPlot_split_by',choices =c(Bar_Graph_Columns,''),selected = '',server=T)
