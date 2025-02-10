@@ -24,7 +24,11 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
   
-  output$MainFigure=renderPlot(DimPlot(reactivevalue$SeuratObject))
+  output$MainFigure=renderPlot(DimPlot(reactivevalue$SeuratObject)+coord_fixed()+ theme(plot.title = element_text(size = 20), 
+                                                                                                    axis.title = element_text(size = 18, face = "bold"), 
+                                                                                                    axis.text = element_text(size = 17),
+                                                                                                    legend.title = element_text(size = 18),
+                                                                                                    legend.text = element_text(size = 17, face = "bold")))
   
   
   output$Metadata=DT::renderDataTable(DT::datatable(reactivevalue$metadata,
@@ -33,22 +37,52 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   
   Bar_Graph_Columns=c()
   for (i in colnames(reactivevalue$metadata)) {
-    if (length(unique(reactivevalue$metadata[,i]))<=10) {
-      Bar_Graph_Columns=c(Bar_Graph_Columns,i)
+    if (typeof((reactivevalue$metadata[,i]))!='double') {
+      if (typeof(reactivevalue$metadata[,i])=='character') {
+        Bar_Graph_Columns=c(Bar_Graph_Columns,i)
+        
+      } else {
+        if (is.factor(reactivevalue$metadata[,i])) {
+          Bar_Graph_Columns=c(Bar_Graph_Columns,i)
+          
+        }
+      }
+    }
+  }
+  Numerical_features=c()
+  for (i in colnames(reactivevalue$metadata)) {
+    if (typeof((reactivevalue$metadata[,i]))=='double') {
+      Numerical_features=c(Numerical_features,i)
+    } else {
+      if (typeof((reactivevalue$metadata[,i]))=='integer') {
+        
+        if (!is.factor(reactivevalue$metadata[,i])) {
+          
+          Numerical_features=c(Numerical_features,i)
+        }
+        
+      }
     }
   }
   
   updateSelectizeInput(session = session,inputId = 'Bar_Graph_y',choices =Bar_Graph_Columns,selected = NULL,server=T)
   updateSelectizeInput(session = session,inputId = 'Bar_Graph_fill',choices =Bar_Graph_Columns,selected = NULL,server=T)
+
+  # Feature Plots
   updateSelectizeInput(session = session,inputId = 'FeaturePlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
-  updateSelectizeInput(session = session,inputId = 'FeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'FeaturePlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'GeneFeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'MetaFeaturePlot_reduction',choices=reactivevalue$reduction,selected = NULL,server = T)
   
   updateSelectizeInput(session = session,inputId = 'DimPlot_group_by',choices =Bar_Graph_Columns,selected = NULL,server=T)
   updateSelectizeInput(session = session,inputId = 'DimPlot_split_by',choices =c(Bar_Graph_Columns,''),selected = '',server=T)
-  updateSelectizeInput(session = session,inputId = 'DimPlot_reduction',choices =reactivevalue$reduction,selected = NULL,server=T)
+  updateSelectizeInput(session = session,inputId = 'DimPlot_reduction',choices =reactivevalue$reduction,selected = "umap",server=T)
   
   updateSelectizeInput(session = session,inputId = 'VlnPlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
-  updateSelectizeInput(session = session,inputId = 'VlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'VlnPlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
+  
+  updateSelectizeInput(session = session,inputId = 'GeneVlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
+  updateSelectizeInput(session = session,inputId = 'MetaVlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
   
   reactivevalue$Loaded=T
 }
@@ -115,9 +149,17 @@ plotDimplot=eventReactive(input$plotDimPlot_Button, {
                 number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
             }
             plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
-                                    ncol = number_col,reduction = input$DimPlot_reduction) + coord_fixed())
+                                    ncol = number_col,reduction = input$DimPlot_reduction) + coord_fixed()+ theme(plot.title = element_text(size = 20), 
+                                                                                                                    axis.title = element_text(size = 18, face = "bold"), 
+                                                                                                                    axis.text = element_text(size = 17),
+                                                                                                                    legend.title = element_text(size = 18),
+                                                                                                                    legend.text = element_text(size = 17, face = "bold")))
             } else {
-            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction) + coord_fixed())
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction) + coord_fixed()+ theme(plot.title = element_text(size = 20), 
+                                                                                                                                                    axis.title = element_text(size = 18, face = "bold"), 
+                                                                                                                                                    axis.text = element_text(size = 17),
+                                                                                                                                                    legend.title = element_text(size = 18),
+                                                                                                                                                    legend.text = element_text(size = 17, face = "bold")))
         }
 
         waitress$close()
@@ -144,15 +186,23 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 
 
 ## Feature Plot
-plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
+plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plots=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
-    
-    as_grob(plots)
-    
-    output$FeaturePlot=renderPlot(plots)
+    plots <- FeaturePlot(reactivevalue$SeuratObject,
+                           features = c(input$FeaturePlot_GeneInput),
+                           reduction = input$GeneFeaturePlot_reduction,
+                           order = T, ncol = 3) &
+        theme(plot.title = element_text(size = 20),
+              axis.title = element_text(size = 18, face = "bold"),
+              axis.text = element_text(size = 17),
+              legend.title = element_text(size = 18),
+              legend.text = element_text(size = 17, face = "bold"))
+      
+      output$GeneFeaturePlot <- renderPlot({
+        print(plots) 
+      }, width = 1300, height = 1200) 
     reactivevalue$featurePlot = plots
     
     waitress$close()
@@ -160,7 +210,33 @@ plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
 })
 
 
-observe(plotFeaturePlot())
+observe(plotGeneFeaturePlot())
+
+plotMetaFeaturePlot=eventReactive(input$plotMetaFeaturePlot_Button, {
+   if (reactivevalue$Loaded) {
+    waitress$start()
+
+    plots <- FeaturePlot(reactivevalue$SeuratObject,
+                           features = c(input$FeaturePlot_MetaInput),
+                           reduction = input$MetaFeaturePlot_reduction,
+                           order = T, ncol = 3) &
+        theme(plot.title = element_text(size = 20),
+              axis.title = element_text(size = 18, face = "bold"),
+              axis.text = element_text(size = 17),
+              legend.title = element_text(size = 18),
+              legend.text = element_text(size = 17, face = "bold"))
+      
+      output$MetaFeaturePlot <- renderPlot({
+        print(plots) 
+      }, width = 1300, height = 1200) 
+    reactivevalue$featurePlot = plots
+    
+    waitress$close()
+  }
+})
+
+
+observe(plotMetaFeaturePlot())
 
 shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
   observeEvent(input$saveFeaturePlot, {
@@ -175,29 +251,68 @@ shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), 
 
 
 ## Violin Plot
-plotVlnplot=eventReactive(input$plotVlnPlot_Button, {
+plotGeneVlnplot=eventReactive(input$plotGeneVlnPlot_Button, {
   if (reactivevalue$Loaded) {
   if (length(input$VlnPlot_GeneInput) > 2) {
     number_col = round(sqrt(length(input$VlnPlot_GeneInput)))
   } else {
     number_col = length(input$VlnPlot_GeneInput)
   }
+
+  group_by <- ifelse(input$GeneVlnPlot_group_by == "", NULL, input$GeneVlnPlot_group_by)
+
   plot = VlnPlot(
     reactivevalue$SeuratObject,
-    features = input$VlnPlot_GeneInput,
-    group.by = input$VlnPlot_group_by,
+    features = c(input$VlnPlot_GeneInput),
+    group.by = group_by,
     ncol = number_col,
     same.y.lims = TRUE,
     raster = TRUE
-  )
+  ) & theme(plot.title = element_text(size = 20), 
+                axis.title = element_text(size = 18, face = "bold"), 
+                axis.text = element_text(size = 17),
+                legend.title = element_text(size = 18),
+                legend.text = element_text(size = 17, face = "bold"))
 }
 
-output$VlnPlot = renderPlot(plot)
+output$GeneVlnPlot = renderPlot(plot)
 reactivevalue$vlnPlot = plot
  
 })
 
-observe(plotVlnplot())
+observe(plotGeneVlnplot())
+
+
+plotMetaVlnplot=eventReactive(input$plotMetaVlnPlot_Button, {
+  if (reactivevalue$Loaded) {
+  if (length(input$VlnPlot_MetaInput) > 2) {
+    number_col = round(sqrt(length(input$VlnPlot_MetaInput)))
+  } else {
+    number_col = length(input$VlnPlot_MetaInput)
+  }
+
+  group_by <- ifelse(input$MetaVlnPlot_group_by == "", NULL, input$MetaVlnPlot_group_by)
+
+  plot = VlnPlot(
+    reactivevalue$SeuratObject,
+    features = c(input$VlnPlot_MetaInput),
+    group.by = group_by,
+    ncol = number_col,
+    same.y.lims = TRUE,
+    raster = TRUE
+  ) & theme(plot.title = element_text(size = 20), 
+                axis.title = element_text(size = 18, face = "bold"), 
+                axis.text = element_text(size = 17),
+                legend.title = element_text(size = 18),
+                legend.text = element_text(size = 17, face = "bold"))
+}
+
+output$MetaVlnPlot = renderPlot(plot)
+reactivevalue$vlnPlot = plot
+ 
+})
+
+observe(plotMetaVlnplot())
 
 shinyFileSave(input, "saveViolinPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
   observeEvent(input$saveViolinPlot, {
