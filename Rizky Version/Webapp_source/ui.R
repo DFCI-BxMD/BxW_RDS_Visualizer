@@ -45,7 +45,7 @@ dashboardPage(
   dashboardBody(
     tags$head(  
       tags$style(HTML("
-        #FeaturePlot-container {
+        #GeneFeaturePlot-container {
           width: 1300px;
           height: 1200px;
           overflow-x: auto;
@@ -54,6 +54,12 @@ dashboardPage(
         #GeneFeaturePlot {
           width: auto;
           height: auto;
+        }
+        #MetaFeaturePlot-container {
+          width: 1300px;
+          height: 1200px;
+          overflow-x: auto;
+          overflow-y: auto;
         }
         #MetaFeaturePlot {
           width: auto;
@@ -135,7 +141,7 @@ dashboardPage(
                                        selectizeInput("GeneFeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                        actionButton('plotGeneFeaturePlot_Button','Plot FeaturePlot'),
                                        br(),
-                                        div(id = "FeaturePlot-container",
+                                        div(id = "GeneFeaturePlot-container",
                                             plotOutput("GeneFeaturePlot")
                                         ),
                                         br(),
@@ -154,7 +160,7 @@ dashboardPage(
                                        selectizeInput("MetaFeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                        actionButton('plotMetaFeaturePlot_Button','Plot FeaturePlot'),
                                        br(),
-                                       div(id = "FeaturePlot-container",
+                                       div(id = "MetaFeaturePlot-container",
                                             plotOutput("MetaFeaturePlot")
                                         ),
                                         br(),
