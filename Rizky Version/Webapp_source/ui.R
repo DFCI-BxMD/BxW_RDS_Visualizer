@@ -25,7 +25,7 @@ library(future)
 # fully defined ui
 dashboardPage(
       # webapp layout #
-      dashboardHeader(title = "RDS Visualizer v2.1", 
+      dashboardHeader(title = "BxW Single-Cell Analyzer v2.1", 
                         tags$li(
                             class = "dropdown", 
                             style = "padding-top: 0px;",
@@ -77,18 +77,16 @@ dashboardPage(
                           h2("Home Page"),
                           br(),
                           br(),
-                          p("Welcome to the RDS Visualizer Web App (v2.1)!"),
+                          p("Welcome to the BxW Single-Cell Analyzer (v2.1)!"),
                           br(),
                           p("This web app is designed for the visualization and exploration of single-cell RNA-seq data contained in Seurat objects. 
                              It will provide various plots and features to help you analyze and gain insights from your data. 
                              This web app has been optimized/structured a DNAnexus build, which circumvents the instance size restrictions of shinyapps.io's base plan."),
                           br(),
-                          p("This web app currently consists of four pages of note: a Data Summary page, a Feature Plot page, a Dim Plot page, and a Violin Plot page. 
-                            As a general rule of thumb, these pages will not visualize any data if no .rds file has been provided by the user in the data summary page.
+                          p("This web app currently consists of four pages of note: a Data Summary page, a Feature Plot page, a Dimensionality Reduction Plot page, and a Violin Plot page. 
+                            As a general rule of thumb, these pages will not visualize any data if no .rds file has been provided by the user in the Home page.
                             Note also that the drop downs on the Dim Plot and Violin Plot pages will not display updated categories until a file has been provided by the user."),
                           br(),
-                          #embed href in paragraph sentence
-                          p("Click ", a("here", target="_blank", href="https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/docs/RDS_Visualizer_user_guide.pdf", .noWS = "outside"), " for an in depth user guide.", .noWS = c("after-begin", "before-end")),
                           
                           # Add any additional content or UI elements here
       ),
@@ -245,18 +243,13 @@ dashboardPage(
                             accordionItem(
                               title = "Is there any way to view tabular representations of the visualizations?",
                               "Currently, the server does not support table generation to supplement each visual. The only way to inspect tabular representations of the uploaded data is in the Data Summary page."
-                            ),
-                            accordionItem(
-                              title = "Why are only some of my categorical variables showing in my dropdown options?",
-                              "For the sake of visual parity, only categorical variables containing less than 5 levels are included from the uploaded .rds file."
                             )
                           ),
                           br(),
                           br(),
                           br(),
                           p("Click ", a("here", target="_blank", href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html", .noWS = "outside"), " to reference the clustering guide used to build this web app.", .noWS = c("after-begin", "before-end")),
-                          br(),
-                          p("Sample seurat objects can be found ", a("here", target="_blank",  href="https://www.dropbox.com/home/Rizky/RShiny/rds/BMS_DGKi", .noWS = "outside"),  ". Feel free to experiment with these example datasets to familiarize yourself with the web app workflow!", .noWS = c("after-begin", "before-end")),
+                          
                           
       )
     ), 
@@ -267,7 +260,7 @@ dashboardPage(
     div(class = "foot",
         tags$footer(
           class = "footer",
-          p("Developed for use of the Belfer Center Research Team by the BxMD Group at DFCI."),
+          p("Developed by the BxMD Group at DFCI"),
           br(),
         ),
         tags$img(

@@ -69,20 +69,25 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   updateSelectizeInput(session = session,inputId = 'Bar_Graph_fill',choices =Bar_Graph_Columns,selected = NULL,server=T)
 
   # Feature Plots
+  default_reduction <- ifelse("umap" %in% reactivevalue$reduction, "umap", 
+                                ifelse("pca" %in% reactivevalue$reduction, "pca", 
+                                       reactivevalue$reduction[1]))
+    
   updateSelectizeInput(session = session,inputId = 'FeaturePlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
   updateSelectizeInput(session = session,inputId = 'FeaturePlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
-  updateSelectizeInput(session = session,inputId = 'GeneFeaturePlot_reduction',choices=reactivevalue$reduction,selected = "umap",server = T)
-  updateSelectizeInput(session = session,inputId = 'MetaFeaturePlot_reduction',choices=reactivevalue$reduction,selected = "umap",server = T)
+  updateSelectizeInput(session = session,inputId = 'GeneFeaturePlot_reduction',choices=reactivevalue$reduction,selected = default_reduction,server = T)
+  updateSelectizeInput(session = session,inputId = 'MetaFeaturePlot_reduction',choices=reactivevalue$reduction,selected = default_reduction,server = T)
   
   updateSelectizeInput(session = session,inputId = 'DimPlot_group_by',choices =Bar_Graph_Columns,selected = NULL,server=T)
   updateSelectizeInput(session = session,inputId = 'DimPlot_split_by',choices =c(Bar_Graph_Columns,''),selected = '',server=T)
-  updateSelectizeInput(session = session,inputId = 'DimPlot_reduction',choices =reactivevalue$reduction,selected = "umap",server=T)
+  updateSelectizeInput(session = session,inputId = 'DimPlot_reduction',choices =reactivevalue$reduction,selected = default_reduction,server=T)
   
   updateSelectizeInput(session = session,inputId = 'VlnPlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
   updateSelectizeInput(session = session,inputId = 'VlnPlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
   
   updateSelectizeInput(session = session,inputId = 'GeneVlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
   updateSelectizeInput(session = session,inputId = 'MetaVlnPlot_group_by',choices=Bar_Graph_Columns,selected = NULL,server = T)
+    
   
   reactivevalue$Loaded=T
 }
