@@ -195,11 +195,11 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
 
-    if (length(input$FeaturePlot_GeneInput) > 2) {
-      number_col <- round(sqrt(length(input$FeaturePlot_GeneInput)))
-    } else {
-      number_col <- length(input$FeaturePlot_GeneInput)
-    }
+  if (length(input$FeaturePlot_GeneInput) > 2) {
+    number_col <- round(sqrt(length(input$FeaturePlot_GeneInput)))
+  } else {
+    number_col <- length(input$FeaturePlot_GeneInput)
+  }
 
     
     plots <- FeaturePlot(reactivevalue$SeuratObject,
@@ -212,8 +212,9 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
               legend.title = element_text(size = 18),
               legend.text = element_text(size = 17, face = "bold"))
       
-    output$GeneFeaturePlot <- renderPlot(plots) 
-       
+      output$GeneFeaturePlot <- renderPlot({
+        print(plots) 
+      }, width = 1300, height = 1200) 
     reactivevalue$featurePlot = plots
     
     waitress$close()
@@ -227,23 +228,20 @@ plotMetaFeaturePlot=eventReactive(input$plotMetaFeaturePlot_Button, {
    if (reactivevalue$Loaded) {
     waitress$start()
 
-      if (length(input$FeaturePlot_MetaInput) > 2) {
-        number_col <- round(sqrt(length(input$FeaturePlot_MetaInput)))
-      } else {
-        number_col <- length(input$FeaturePlot_MetaInput)
-      }
-
     plots <- FeaturePlot(reactivevalue$SeuratObject,
                            features = c(input$FeaturePlot_MetaInput),
                            reduction = input$MetaFeaturePlot_reduction,
-                           order = T, ncol = number_col) &
+                           order = T, ncol = 3) &
         theme(plot.title = element_text(size = 20),
               axis.title = element_text(size = 18, face = "bold"),
               axis.text = element_text(size = 17),
               legend.title = element_text(size = 18),
               legend.text = element_text(size = 17, face = "bold"))
       
-      output$MetaFeaturePlot <- renderPlot(plots) 
+      output$MetaFeaturePlot <- renderPlot({
+        print(plots) 
+      }, width = 1300, height = 1200) 
+    reactivevalue$featurePlot = plots
     
     waitress$close()
   }
