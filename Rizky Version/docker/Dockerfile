@@ -30,4 +30,7 @@ RUN R -e "install.packages('tiledb')"
 RUN R -e "Sys.setenv('NOT_CRAN' = 'true')"
 RUN R -e "install.packages('arrow')"
 RUN R -e "install.packages('tiledbsoma', repos = c('https://tiledb-inc.r-universe.dev','https://cloud.r-project.org'))"
-
+RUN R -e "install.packages('ggrastr')"
+RUN R -e "install.packages('ggplotify')"
+RUN R -e "install.packages('qs')"
+RUN R -e "install.packages('future')"
