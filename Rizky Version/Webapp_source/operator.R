@@ -194,11 +194,18 @@ shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), file
 plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
+
+    if (length(input$FeaturePlot_GeneInput) > 2) {
+      number_col <- round(sqrt(length(input$FeaturePlot_GeneInput)))
+    } else {
+      number_col <- length(input$FeaturePlot_GeneInput)
+    }
+
     
     plots <- FeaturePlot(reactivevalue$SeuratObject,
                            features = c(input$FeaturePlot_GeneInput),
                            reduction = input$GeneFeaturePlot_reduction,
-                           order = T, ncol = 3) &
+                           order = T, ncol = number_col) &
         theme(plot.title = element_text(size = 20),
               axis.title = element_text(size = 18, face = "bold"),
               axis.text = element_text(size = 17),
@@ -221,10 +228,16 @@ plotMetaFeaturePlot=eventReactive(input$plotMetaFeaturePlot_Button, {
    if (reactivevalue$Loaded) {
     waitress$start()
 
+      if (length(input$FeaturePlot_MetaInput) > 2) {
+        number_col <- round(sqrt(length(input$FeaturePlot_MetaInput)))
+      } else {
+        number_col <- length(input$FeaturePlot_MetaInput)
+      }
+
     plots <- FeaturePlot(reactivevalue$SeuratObject,
                            features = c(input$FeaturePlot_MetaInput),
                            reduction = input$MetaFeaturePlot_reduction,
-                           order = T, ncol = 3) &
+                           order = T, ncol = number_col) &
         theme(plot.title = element_text(size = 20),
               axis.title = element_text(size = 18, face = "bold"),
               axis.text = element_text(size = 17),
