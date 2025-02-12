@@ -24,13 +24,13 @@ library(future)
 
 # fully defined ui
 dashboardPage(
-      # webapp layout #
-      dashboardHeader(title = "BxW Single-Cell Analyzer v2.1", 
-                        tags$li(
-                            class = "dropdown", 
-                            style = "padding-top: 0px;",
-                            tags$a(target="_blank", href = "https://github.com/rkafrawi/RDS_Vis_v1_1/tree/main", "Github Repo", .noWS = "outside")
-                      )
+  # webapp layout #
+  dashboardHeader(title = span("BxW Single-Cell Analyzer v2.1", style = "font-size: 14px;"), 
+                  tags$li(
+                    class = "dropdown", 
+                    style = "padding-top: 0px;",
+                    tags$a(target="_blank", href = "https://github.com/rkafrawi/RDS_Vis_v1_1/tree/main", "Github Repo", .noWS = "outside")
+                  )
   ),
   menu_bar <- dashboardSidebar(
     sidebarMenu(
@@ -65,10 +65,30 @@ dashboardPage(
           width: auto;
           height: auto;
         }
+        #GeneVlnPlot-container {
+           width: 1300px;
+          height: 1200px;
+          overflow-x: auto;
+          overflow-y: auto;
+        }
+        #GeneVlnPlot {
+          width: auto;
+          height: auto;
+        }
+        #MetaVlnPlot-container {
+          width: 1300px;
+          height: 1200px;
+          overflow-x: auto;
+          overflow-y: auto;
+        }
+        #MetaVlnPlot {
+          width: auto;
+          height: auto;
+        }
       "))
     ),
     useWaitress(color = "#0047AB"),
-
+    
     tabItems(
       tab_home <- tabItem(tabName = "home",
                           h2("Select a File"),
@@ -91,44 +111,44 @@ dashboardPage(
                           # Add any additional content or UI elements here
       ),
       tab_input <- tabItem(
-                      tabName = "input_summ",
-                      h2("Data Summary Page"),
-                      br(),
-                      # Update the text to remove file upload instructions
-                      p("This app generates visualizations for a pre-loaded .rds file."),
-                      br(),
-                      # Display panels with data output
-                      tabsetPanel(
-                        tabPanel(
-                          "Main Figure",
-                          br(),
-                          imageOutput('MainFigure', height="700px")
-                        ),
-                        tabPanel(
-                          "Metadata",
-                          br(),
-                          dataTableOutput("Metadata")
-                        ),
-                        tabPanel(
-                          "Data Distribution",
-                          br(),
-                          selectizeInput('Bar_Graph_y','Group in Y-Axis',choices=NULL,selected=NULL),
-                          selectizeInput('Bar_Graph_fill','Groups that will fill the colors of bar',choices=NULL,selected=NULL),
-                          br(),
-                          checkboxInput('Bar_Graph_Percentage','Generate Percentage Bar Graph'),
-                          br(),
-                          plotOutput('BarGraph'),
-                          br(),
-                          dataTableOutput("BarGraph_Table")
-                          
-                        )
-                      )
-  ),
+        tabName = "input_summ",
+        h2("Data Summary Page"),
+        br(),
+        # Update the text to remove file upload instructions
+        p("This app generates visualizations for a pre-loaded .rds file."),
+        br(),
+        # Display panels with data output
+        tabsetPanel(
+          tabPanel(
+            "Main Figure",
+            br(),
+            imageOutput('MainFigure', height="700px")
+          ),
+          tabPanel(
+            "Metadata",
+            br(),
+            dataTableOutput("Metadata")
+          ),
+          tabPanel(
+            "Data Distribution",
+            br(),
+            selectizeInput('Bar_Graph_y','Group in Y-Axis',choices=NULL,selected=NULL),
+            selectizeInput('Bar_Graph_fill','Groups that will fill the colors of bar',choices=NULL,selected=NULL),
+            br(),
+            checkboxInput('Bar_Graph_Percentage','Generate Percentage Bar Graph'),
+            br(),
+            plotOutput('BarGraph'),
+            br(),
+            dataTableOutput("BarGraph_Table")
+            
+          )
+        )
+      ),
       tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
                                    h2("Feature Plot"),
-                                    tabsetPanel(
+                                   tabsetPanel(
                                      tabPanel(
-                                      "Gene Expression Feature Plot",
+                                       "Gene Expression Feature Plot",
                                        
                                        br(),
                                        p("Enter the gene of interest and color the selected dimension reduction with its expression"),
@@ -139,13 +159,13 @@ dashboardPage(
                                        selectizeInput("GeneFeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                        actionButton('plotGeneFeaturePlot_Button','Plot FeaturePlot'),
                                        br(),
-                                        div(id = "GeneFeaturePlot-container",
-                                            plotOutput("GeneFeaturePlot")
-                                        ),
-                                        br(),
-                                        shinySaveButton("saveFeaturePlot", "Download Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
+                                       div(id = "GeneFeaturePlot-container",
+                                           plotOutput("GeneFeaturePlot")
+                                       ),
+                                       br(),
+                                       shinySaveButton("saveFeaturePlot", "Download Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
                                      ),
-                                    
+                                     
                                      tabPanel(
                                        "Metadata Feature Plot",
                                        
@@ -159,12 +179,12 @@ dashboardPage(
                                        actionButton('plotMetaFeaturePlot_Button','Plot FeaturePlot'),
                                        br(),
                                        div(id = "MetaFeaturePlot-container",
-                                            plotOutput("MetaFeaturePlot")
-                                        ),
-                                        br(),
-                                        shinySaveButton("saveFeaturePlot", "Download Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
+                                           plotOutput("MetaFeaturePlot")
+                                       ),
+                                       br(),
+                                       shinySaveButton("saveFeaturePlot", "Download Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
                                      ))
-
+                                   
                                    
       ),
       tab_dim <- tabItem(tabName = "DimPlot",
@@ -178,17 +198,17 @@ dashboardPage(
                          #checkboxInput("splitToggle", "Split Dim Plot", value = FALSE),
                          selectizeInput('DimPlot_group_by','Color the plots by: ',choices=NULL),
                          br(),
-                        # selectInput("variableInput", label = "Select a Group:",
-                        #             choices = "Input File For Dropdown Options"),
-                        selectizeInput('DimPlot_split_by','Split the plots by: ',choices=NULL),
-                        selectizeInput('DimPlot_reduction','Plot the plots by : ',choices=NULL),
-                        
-                        br(),
-                        actionButton("plotDimPlot_Button","Generate Plot"),
-                        br(),
-                        plotOutput("DimPlot", height="700px"),
-                        br(),
-                        shinySaveButton("saveDimPlot", "Download Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
+                         # selectInput("variableInput", label = "Select a Group:",
+                         #             choices = "Input File For Dropdown Options"),
+                         selectizeInput('DimPlot_split_by','Split the plots by: ',choices=NULL),
+                         selectizeInput('DimPlot_reduction','Plot the plots by : ',choices=NULL),
+                         
+                         br(),
+                         actionButton("plotDimPlot_Button","Generate Plot"),
+                         br(),
+                         plotOutput("DimPlot", height="700px"),
+                         br(),
+                         shinySaveButton("saveDimPlot", "Download Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
@@ -202,9 +222,8 @@ dashboardPage(
                                 selectizeInput('GeneVlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                                 actionButton("plotGeneVlnPlot_Button","Generate Violin Plot"),
                                 br(),
-                                div(  
-                                  plotOutput("GeneVlnPlot", height = "1000px"), 
-                                  style = "overflow-y: scroll; height: 800px;" 
+                                div(id = "GeneVlnPlot-container",
+                                    plotOutput("GeneVlnPlot")
                                 ),
                                 br(),
                                 shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
@@ -217,15 +236,14 @@ dashboardPage(
                                 selectizeInput('MetaVlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                                 actionButton("plotMetaVlnPlot_Button","Generate Violin Plot"),
                                 br(),
-                                div(  
-                                  plotOutput("MetaVlnPlot", height = "1000px"), 
-                                  style = "overflow-y: scroll; height: 800px;" 
+                                div(id = "MetaVlnPlot-container",
+                                    plotOutput("MetaVlnPlot")
                                 ),
                                 br(),
                                 shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
                               ),
-                              )
-
+                            )
+                            
       ),
       
       tab_help <- tabItem(tabName = "help",
@@ -267,7 +285,7 @@ dashboardPage(
           src ="https://raw.githubusercontent.com/tpathakdfci/Logo/main/Home%20_%20Informatics%20and%20Analytics.png",
           style="display: block; margin-left: auto; margin-right: auto; width:20%; height:15%",
         )
-        ),
+    ),
     
     
     
@@ -299,3 +317,4 @@ dashboardPage(
 )
 
 #########           UI END          ##########
+
