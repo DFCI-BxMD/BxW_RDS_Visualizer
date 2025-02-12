@@ -195,7 +195,7 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
 
-   if (length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))>2) {
+   if (length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))>1) {
                 number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))))
             } else {
                 number_col=length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))
