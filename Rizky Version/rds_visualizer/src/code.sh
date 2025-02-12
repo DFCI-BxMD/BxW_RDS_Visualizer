@@ -38,7 +38,7 @@ chmod -R +777 "$vm_output"
  wget -P "${vm_output}" $url/DESCRIPTION $url/server.R $url/ui.R $url/operator.R
  
  # pull and run Shiny Server docker image
- dx download $DX_PROJECT_CONTEXT_ID:/rk_shiny/rds_vis_tarishi.tar.gz
+ dx download project-GZ12PXQ0V2QKf5k7bjXJV26q:/Single-Cell-Analyzer/rds_vis_tarishi.tar.gz
  docker load -i rds_vis_tarishi.tar.gz
  
  # attach our rds_vis app's folder as a volume
