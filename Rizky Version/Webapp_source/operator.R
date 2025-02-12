@@ -212,9 +212,8 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
               legend.title = element_text(size = 18),
               legend.text = element_text(size = 17, face = "bold"))
       
-      output$GeneFeaturePlot <- renderPlot({
-        print(plots) 
-      }, width = 1300, height = 1200) 
+    output$GeneFeaturePlot <- renderPlot(plots) 
+       
     reactivevalue$featurePlot = plots
     
     waitress$close()
@@ -244,10 +243,7 @@ plotMetaFeaturePlot=eventReactive(input$plotMetaFeaturePlot_Button, {
               legend.title = element_text(size = 18),
               legend.text = element_text(size = 17, face = "bold"))
       
-      output$MetaFeaturePlot <- renderPlot({
-        print(plots) 
-      }, width = 1300, height = 1200) 
-    reactivevalue$featurePlot = plots
+      output$MetaFeaturePlot <- renderPlot(plots) 
     
     waitress$close()
   }
