@@ -195,11 +195,11 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
 
-  if (length(input$FeaturePlot_GeneInput) > 2) {
-    number_col <- round(sqrt(length(input$FeaturePlot_GeneInput)))
-  } else {
-    number_col <- length(input$FeaturePlot_GeneInput)
-  }
+   if (length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))>2) {
+                number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))))
+            } else {
+                number_col=length(unique(reactivevalue$metadata[,input$FeaturePlot_GeneInput]))
+            }
 
     
     plots <- FeaturePlot(reactivevalue$SeuratObject,
@@ -212,9 +212,7 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
               legend.title = element_text(size = 18),
               legend.text = element_text(size = 17, face = "bold"))
       
-      output$GeneFeaturePlot <- renderPlot({
-        print(plots) 
-      }, width = 1300, height = 1200) 
+      output$GeneFeaturePlot <- renderPlot(plots)
     reactivevalue$featurePlot = plots
     
     waitress$close()
