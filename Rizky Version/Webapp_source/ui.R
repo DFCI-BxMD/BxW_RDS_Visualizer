@@ -25,7 +25,7 @@ library(future)
 # fully defined ui
 dashboardPage(
       # webapp layout #
-      dashboardHeader(title = "RDS Visualizer v2.1", 
+      dashboardHeader(title = "Single Cell Analyzer", 
                         tags$li(
                             class = "dropdown", 
                             style = "padding-top: 0px;",
@@ -53,7 +53,7 @@ dashboardPage(
                           h2("Home Page"),
                           br(),
                           br(),
-                          p("Welcome to the RDS Visualizer Web App (v2.1)!"),
+                          p("Welcome to the Single Cell Analyzer Web App (v2.1)!"),
                           br(),
                           p("This web app is designed for the visualization and exploration of single-cell RNA-seq data contained in Seurat objects. 
                              It will provide various plots and features to help you analyze and gain insights from your data. 
@@ -251,7 +251,7 @@ dashboardPage(
     div(class = "foot",
         tags$footer(
           class = "footer",
-          p("Developed for use of the Belfer Center Research Team by the BxMD Group at DFCI."),
+          p("Developed for use by the BxMD Group at DFCI."),
           br(),
         ),
         tags$img(

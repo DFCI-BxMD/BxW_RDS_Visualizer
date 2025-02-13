@@ -177,9 +177,37 @@ plotGeneFeaturePlot=eventReactive(input$plotGeneFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plots=FeaturePlot(reactivevalue$SeuratObject,features = c(input$FeaturePlot_GeneInput),reduction = input$GeneFeaturePlot_reduction,order = T)
     
-    as_grob(plots)
+    plots=list()
+    number_col=1
+    if (length(input$FeaturePlot_GeneInput)>2) {
+      number_col=round(sqrt(length(input$FeaturePlot_GeneInput)))
+    } else {
+      number_col=length(unique(input$FeaturePlot_GeneInput))
+    }
+    number_col_contestant=round(length(input$FeaturePlot_GeneInput)/number_col)
+    if (number_col_contestant>number_col) {
+      number_col=number_col_contestant
+    }
+    
+    for (i in input$FeaturePlot_GeneInput) {
+      if (all(as.numeric(reactivevalue$SeuratObject@assays$RNA@data[i,])==0)) {
+        temp=FeaturePlot(reactivevalue$SeuratObject,features = i,reduction = input$GeneFeaturePlot_reduction,order = T,cols = c('grey','grey'))
+        
+      } else {
+        temp=FeaturePlot(reactivevalue$SeuratObject,features = i,reduction = input$GeneFeaturePlot_reduction,order = T,cols = c('grey','blue'))
+        
+      }
+      as_grob(temp)
+      
+      plots[[i]]=temp
+    }
+    
+    #plots=FeaturePlot(reactivevalue$SeuratObject,features = c(input$FeaturePlot_GeneInput),reduction = input$GeneFeaturePlot_reduction,order = T)
+    
+    #as_grob(plots)
+    plots=patchwork::wrap_plots(plots,ncol=number_col,nrow=number_col)
+    
     
     output$GeneFeaturePlot=renderPlot(plots)
     reactivevalue$featurePlot = plots
@@ -195,9 +223,38 @@ plotMetaFeaturePlot=eventReactive(input$plotMetaFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
     waitress$start()
     
-    plots=FeaturePlot(reactivevalue$SeuratObject,features = c(input$FeaturePlot_MetaInput),reduction = input$MetaFeaturePlot_reduction,order = T)
     
-    as_grob(plots)
+    
+    plots=list()
+    number_col=1
+    if (length(input$FeaturePlot_MetaInput)>2) {
+      number_col=round(sqrt(length(input$FeaturePlot_MetaInput)))
+    } else {
+      number_col=length(unique(input$FeaturePlot_MetaInput))
+    }
+    number_col_contestant=round(length(input$FeaturePlot_MetaInput)/number_col)
+    if (number_col_contestant>number_col) {
+      number_col=number_col_contestant
+    }
+    
+    for (i in input$FeaturePlot_MetaInput) {
+      if (all(as.numeric(reactivevalue$SeuratObject@meta.data[,i])==0)) {
+        temp=FeaturePlot(reactivevalue$SeuratObject,features = i,reduction = input$MetaFeaturePlot_reduction,order = T,cols = c('grey','grey'))
+        
+      } else {
+        temp=FeaturePlot(reactivevalue$SeuratObject,features = i,reduction = input$MetaFeaturePlot_reduction,order = T,cols = c('grey','blue'))
+        
+      }
+      as_grob(temp)
+      
+      plots[[i]]=temp
+    }
+    
+    #plots=FeaturePlot(reactivevalue$SeuratObject,features = c(input$FeaturePlot_GeneInput),reduction = input$GeneFeaturePlot_reduction,order = T)
+    
+    #as_grob(plots)
+    plots=patchwork::wrap_plots(plots,ncol=number_col,nrow=number_col)
+  
     
     output$MetaFeaturePlot=renderPlot(plots)
     reactivevalue$featurePlot = plots
