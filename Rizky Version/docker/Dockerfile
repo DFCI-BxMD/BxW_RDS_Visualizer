@@ -2,15 +2,17 @@
 #   has R, RStudio, tidyverse, devtools, tex, and publishing-related packages
 FROM rocker/shiny
 
-MAINTAINER Rizky Kafrawi <rkafrawi@dfci.harvard.edu>
 
 # Install system dependencies
-RUN apt-get update && \
+RUN apt-get clean && \
+     apt-get update && \
     apt-get install -y --no-install-recommends \
     libgsl-dev \
     libxml2-dev \
     libglpk-dev \
-    libcurl4-openssl-dev
+    libcurl4-openssl-dev \
+    cmake \
+    git
 
 RUN R -e "install.packages(c('shiny','shinydashboard','shinydashboardPlus', 'purrr', 'stringr', 'DT', 'shinyalert', 'ggplot2'))" 
 
@@ -19,3 +21,13 @@ RUN R --no-echo --no-restore --no-save -e "install.packages('Seurat')"
 
 # Install SeuratDisk
 RUN R --no-echo --no-restore --no-save -e "remotes::install_github('mojaveazure/seurat-disk')"
+
+RUN R -e "install.packages('shinyFiles')"
+RUN R -e "install.packages('waiter')"
+RUN R -e "install.packages('shinycssloaders')"
+
+RUN R -e "install.packages('tiledb')"
+RUN R -e "Sys.setenv('NOT_CRAN' = 'true')"
+RUN R -e "install.packages('arrow')"
+RUN R -e "install.packages('tiledbsoma', repos = c('https://tiledb-inc.r-universe.dev','https://cloud.r-project.org'))"
+

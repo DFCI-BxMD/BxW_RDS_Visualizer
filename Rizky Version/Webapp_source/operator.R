@@ -1,12 +1,12 @@
 #### Check if Seurat Object exist and whether it is loaded: if yes and no, load, if yes and no, stop, if no and no, stop.####
 
 
-
+waitress <- Waitress$new(theme = "overlay-percent")
 
 
 observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   print(reactivevalue$Loaded)
-  reactivevalue$SeuratObject=readRDS(reactivevalue$RDS_directory[1])
+  reactivevalue$SeuratObject=readRDS(reactivevalue$RDS_directory)
   reactivevalue$SeuratObject=UpdateSeuratObject(reactivevalue$SeuratObject)
   reactivevalue$metadata=reactivevalue$SeuratObject@meta.data
   DefaultAssay(reactivevalue$SeuratObject)='RNA'
@@ -14,6 +14,13 @@ observe(if (length(reactivevalue$RDS_directory)!=0&(!reactivevalue$Loaded)) {
   reactivevalue$genes_name=rownames(reactivevalue$SeuratObject)
   
   reactivevalue$reduction=names((reactivevalue$SeuratObject@reductions))
+
+
+  # Convert Seurat object to soma experiment
+
+  # EXPERIMENT_URI <- sprintf("dx://project-xxxx:/path/to/file")
+  # write_soma(reactivevalue$SeuratObject, uri = EXPERIMENT_URI)
+
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('pca',reactivevalue$reduction,ignore.case = T)]
   #reactivevalue$reduction=reactivevalue$reduction[!grepl('harmony',reactivevalue$reduction,ignore.case = T)]
   
@@ -97,63 +104,107 @@ observeEvent(BarGraphListener(),{
 })
 
 
+## Dim Plot 
 plotDimplot=eventReactive(input$plotDimPlot_Button, {
-  if (reactivevalue$Loaded) {
-    if (input$DimPlot_split_by!=''){
-      if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
-        number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
-      } else {
-        number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
-      }
-      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
-                             ncol = number_col,reduction = input$DimPlot_reduction))
-    } else {
-      plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction))
-    }
+    if (reactivevalue$Loaded) {
+        waitress$start() 
+        if (input$DimPlot_split_by!=''){
+            if (length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))>2) {
+                number_col=round(sqrt(length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))))
+            } else {
+                number_col=length(unique(reactivevalue$metadata[,input$DimPlot_split_by]))
+            }
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,split.by = input$DimPlot_split_by,
+                                    ncol = number_col,reduction = input$DimPlot_reduction) + coord_fixed())
+            } else {
+            plot=(DimPlot(reactivevalue$SeuratObject,group.by = input$DimPlot_group_by,reduction = input$DimPlot_reduction) + coord_fixed())
+        }
+
+        waitress$close()
     
   }
 
   output$DimPlot=renderPlot(plot)
+  reactivevalue$dimPlot = plot
 })
 
 observe(plotDimplot())
 
+# Save the plot in mounted project
+shinyFileSave(input, "saveDimPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveDimPlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveDimPlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
+        print(reactivevalue$dimPlot)
+        dev.off()
+    }
+    })
+    
 
 
-
-
-
+## Feature Plot
 plotFeaturePlot=eventReactive(input$plotFeaturePlot_Button, {
   if (reactivevalue$Loaded) {
+    waitress$start()
     
-  plot=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
-  
-  output$FeaturePlot=renderPlot(plot)
+    plots=FeaturePlot(reactivevalue$SeuratObject,features = input$FeaturePlot_GeneInput,reduction = input$FeaturePlot_reduction,order = T)
+    
+    as_grob(plots)
+    
+    output$FeaturePlot=renderPlot(plots)
+    reactivevalue$featurePlot = plots
+    
+    waitress$close()
   }
 })
+
 
 observe(plotFeaturePlot())
 
+shinyFileSave(input, "saveFeaturePlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveFeaturePlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveFeaturePlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
+        print(reactivevalue$featurePlot)
+        dev.off()
+    }
+    })
 
 
 
-
-
-plotVlnPlot=eventReactive(input$plotVlnPlot_Button, {
+## Violin Plot
+plotVlnplot=eventReactive(input$plotVlnPlot_Button, {
   if (reactivevalue$Loaded) {
-    
-  if (length(input$VlnPlot_GeneInput)>2) {
-    number_of_cols=round(sqrt(length(input$VlnPlot_GeneInput)))
+  if (length(input$VlnPlot_GeneInput) > 2) {
+    number_col = round(sqrt(length(input$VlnPlot_GeneInput)))
   } else {
-    number_of_cols=length(input$VlnPlot_GeneInput)
-    
+    number_col = length(input$VlnPlot_GeneInput)
   }
-  plot=VlnPlot(reactivevalue$SeuratObject,features = input$VlnPlot_GeneInput,group.by = input$VlnPlot_group_by,ncol = number_of_cols,same.y.lims = T,raster = T)
-  
-  output$VlnPlot=renderPlot(plot)
-  }
+  plot = VlnPlot(
+    reactivevalue$SeuratObject,
+    features = input$VlnPlot_GeneInput,
+    group.by = input$VlnPlot_group_by,
+    ncol = number_col,
+    same.y.lims = TRUE,
+    raster = TRUE
+  )
+}
+
+output$VlnPlot = renderPlot(plot)
+reactivevalue$vlnPlot = plot
+ 
 })
 
-observe(plotVlnPlot())
+observe(plotVlnplot())
 
-
+shinyFileSave(input, "saveViolinPlot", roots =c(wd="/home/dnanexus/project/"), filetypes = c("pdf"))
+  observeEvent(input$saveViolinPlot, {
+    fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveViolinPlot)
+    if (nrow(fileinfo) > 0) {
+      pdf(fileinfo$datapath) 
+        print(reactivevalue$VlnPlot)
+        dev.off()
+    }
+    })

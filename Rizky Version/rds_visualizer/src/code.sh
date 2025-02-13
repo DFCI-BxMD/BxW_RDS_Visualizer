@@ -29,33 +29,20 @@ else
 fi
 
 
-rds=${rds_file:-}
-if [ -z ${rds} ];
-then 
-   echo "No data image provided"
-   mkdir -p "${vm_output}/rds_vizualizer"
-else
-   fileid=`echo ${rds} | awk -F":" '{print $2}' | sed 's/}//g' | tr -d ' ' | tr -d '"'`
-   mkdir -p "${vm_output}/rds_vizualizer" 
-   filename=`dx describe $fileid | grep "Name" | awk '{sub(/[^ ]+[ ]+/,"")}1' | sed 's, ,\\ ,g'`
-   dx download $fileid -o "${vm_output}/rds_vizualizer/${filename}" -f
-   rds_fullpath="${vm_output}/rds_vizualizer/${filename}"
-   chmod +777 "$rds_fullpath"
-fi
 
 chmod -R +777 "$vm_output"
 
 # start RDS Visualizer ...
- cd "${vm_output}/rds_vizualizer"
+ cd "${vm_output}"
  url=https://raw.githubusercontent.com/DFCI-BxMD/BxW_RDS_Visualizer/refs/heads/main/Rizky%20Version/Webapp_source
- wget -P "${vm_output}/rds_vizualizer" $url/DESCRIPTION $url/server.R $url/ui.R
+ wget -P "${vm_output}" $url/DESCRIPTION $url/server.R $url/ui.R $url/operator.R
  
  # pull and run Shiny Server docker image
- dx download $DX_PROJECT_CONTEXT_ID:/rk_shiny/rds_vis_maria.tar.gz
- docker load -i rds_vis_maria.tar.gz
+ dx download $DX_PROJECT_CONTEXT_ID:/rk_shiny/rds_vis_tarishi.tar.gz
+ docker load -i rds_vis_tarishi.tar.gz
  
  # attach our rds_vis app's folder as a volume
- docker run --rm -p 443:3838 -v $PWD:/srv/shiny-server/ rds_vis_maria
+ docker run --rm -p 443:3838 -v $PWD:/srv/shiny-server/ -v /home/dnanexus:/home/dnanexus rds_vis_tarishi 
 
 }
 

@@ -2,6 +2,22 @@
 #options(shiny.maxRequestSize=1000000*1024^2) #max 10gb upload
 
 #load libraries
+library(shiny)
+library(shinydashboard)
+library(shinydashboardPlus)
+library(shinyFiles)
+library(shinycssloaders)
+library(purrr)
+library(stringr)
+library(Seurat)
+library(DT)
+library(shinyalert)
+library(ggplot2)
+library(waiter)
+library(cowplot)
+library(patchwork)
+library(qs) 
+library(future)
 
 
 #########           UI START          ##########
@@ -9,7 +25,7 @@
 # fully defined ui
 dashboardPage(
       # webapp layout #
-      dashboardHeader(title = "RDS Visualizer v1.1", 
+      dashboardHeader(title = "RDS Visualizer v2.1", 
                         tags$li(
                             class = "dropdown", 
                             style = "padding-top: 0px;",
@@ -27,12 +43,17 @@ dashboardPage(
     )
   ),
   dashboardBody(
+    useWaitress(color = "#0047AB"),
+
     tabItems(
       tab_home <- tabItem(tabName = "home",
+                          h2("Select a File"),
+                          shinyFilesButton("files", label="Browse", title="Please select a file", multiple=FALSE),
+                          verbatimTextOutput("loadedFile"),
                           h2("Home Page"),
                           br(),
                           br(),
-                          p("Welcome to the RDS Visualizer Web App (v1.1)!"),
+                          p("Welcome to the RDS Visualizer Web App (v2.1)!"),
                           br(),
                           p("This web app is designed for the visualization and exploration of single-cell RNA-seq data contained in Seurat objects. 
                              It will provide various plots and features to help you analyze and gain insights from your data. 
@@ -82,16 +103,21 @@ dashboardPage(
                       )
   ),
       tab_inputfeatures <- tabItem(tabName = "Feature_plot_page",
-                                   h2("Feature Plot Page"),
+                                   h2("Feature Plot"),
 
                                    br(),
                                    p("Enter the gene of interest and color the selected dimension reduction with its expression"),
                                    br(),
-                                   selectInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
+                                   selectizeInput("FeaturePlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
                                    selectizeInput("FeaturePlot_reduction", "Select Reduction Name:",choices = NULL,selected = NULL),
                                    actionButton('plotFeaturePlot_Button','Plot FeaturePlot'),
                                    br(),
-                                   plotOutput('FeaturePlot')
+                                   div(  
+                                     plotOutput("FeaturePlot", height = "1000px"), 
+                                     style = "overflow-y: scroll; height: 800px;" 
+                                   ),
+                                   br(),
+                                   shinySaveButton("saveFeaturePlot", "Download Feature Plot (PDF)", title = "Save Feature Plot", filetype = list(PDF = "pdf"))
 
                                    
       ),
@@ -108,23 +134,30 @@ dashboardPage(
                          br(),
                         # selectInput("variableInput", label = "Select a Group:",
                         #             choices = "Input File For Dropdown Options"),
-                        selectizeInput('DimPlot_split_by','Splity the DimPlots by: ',choices=NULL),
+                        selectizeInput('DimPlot_split_by','Split the DimPlots by: ',choices=NULL),
                         selectizeInput('DimPlot_reduction','Plot the DimPlots by : ',choices=NULL),
                         
                         br(),
                         actionButton("plotDimPlot_Button","Generate DimPlot"),
                         br(),
-                        plotOutput("DimPlot")
+                        plotOutput("DimPlot", height="1000px"),
+                        br(),
+                        shinySaveButton("saveDimPlot", "Download Dim Plot (PDF)", title = "Save Dim Plot", filetype = list(PDF = "pdf"))
                          
       ),
       tab_violin <- tabItem(tabName = "VlnPlot",
-                            h2("Violin Plot Page"),
+                            h2("Violin Plot"),
                             br(),
-                            selectInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T),
+                            selectizeInput("VlnPlot_GeneInput", "Select Gene:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
                             selectizeInput('VlnPlot_group_by','Group the Violin Plot by: ',choices=NULL),
                             actionButton("plotVlnPlot_Button","Generate Violin Plot"),
-                            
-                            plotOutput("VlnPlot")
+                            br(),
+                            div(  
+                                     plotOutput("VlnPlot", height = "1000px"), 
+                                     style = "overflow-y: scroll; height: 800px;" 
+                                   ),
+                            br(),
+                            shinySaveButton("saveViolinPlot", "Download Violin Plot (PDF)", title = "Save Violin Plot", filetype = list(PDF = "pdf"))
       ),
       
       tab_help <- tabItem(tabName = "help",
@@ -171,8 +204,8 @@ dashboardPage(
           br(),
         ),
         tags$img(
-          src ="https://raw.githubusercontent.com/rkafrawi/RDS_Vis_v1_1/main/docs/bxMD_logo.jpeg",
-          style="display: block; margin-left: auto; margin-right: auto; width:35%; height:15%",
+          src ="https://raw.githubusercontent.com/tpathakdfci/Logo/main/Home%20_%20Informatics%20and%20Analytics.png",
+          style="display: block; margin-left: auto; margin-right: auto; width:20%; height:15%",
         )
         ),
     
