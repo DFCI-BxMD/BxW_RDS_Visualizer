@@ -70,8 +70,9 @@
     
     # Feature Plots
     default_reduction <- ifelse("umap" %in% reactivevalue$reduction, "umap", 
-                                ifelse("pca" %in% reactivevalue$reduction, "pca", 
-                                       reactivevalue$reduction[1]))
+                                ifelse("tsne" %in% reactivevalue$reduction, "tsne", 
+                                      ifelse("pca" %in% reactivevalue$reduction, "pca", 
+                                       reactivevalue$reduction[1])))
     
     updateSelectizeInput(session = session,inputId = 'FeaturePlot_GeneInput',choices=reactivevalue$genes_name,selected = NULL,server = T)
     updateSelectizeInput(session = session,inputId = 'FeaturePlot_MetaInput',choices=Numerical_features,selected = NULL,server = T)
@@ -494,7 +495,7 @@
     fileinfo <- parseSavePath(c(wd="/home/dnanexus/project/"), input$saveViolinPlot)
     if (nrow(fileinfo) > 0) {
       pdf(fileinfo$datapath) 
-      print(reactivevalue$VlnPlot)
+      print(reactivevalue$vlnPlot)
       dev.off()
     }
   })

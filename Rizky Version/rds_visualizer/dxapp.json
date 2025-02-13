@@ -3,7 +3,7 @@
   "title": "BxW Single-Cell Analyzer",
   "summary": "Single-Cell Analyzing WebApp",
   "dxapi": "1.0.0",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "httpsApp": {
           "ports": [443],
           "shared_access": "VIEW"
