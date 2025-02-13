@@ -1,4 +1,4 @@
-#### Check if Seurat Object exist and whether it is loaded: if yes and no, load, if yes and no, stop, if no and no, stop.####
+  #### Check if Seurat Object exist and whether it is loaded: if yes and no, load, if yes and no, stop, if no and no, stop.####
 
 
 waitress <- Waitress$new(theme = "overlay-percent")
