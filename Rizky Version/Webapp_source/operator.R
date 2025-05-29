@@ -201,11 +201,11 @@
       plots=list()
       number_col=1
       if (length(input$FeaturePlot_GeneInput)>2) {
-        number_col=round(sqrt(length(input$FeaturePlot_GeneInput)))
+        number_col=ceiling(sqrt(length(input$FeaturePlot_GeneInput)))
       } else {
         number_col=length(unique(input$FeaturePlot_GeneInput))
       }
-      number_col_contestant=round(length(input$FeaturePlot_GeneInput)/number_col)
+      number_col_contestant=ceiling(length(input$FeaturePlot_GeneInput)/number_col)
       if (number_col_contestant>number_col) {
         number_col=number_col_contestant
       }
@@ -280,11 +280,11 @@
       plots=list()
       number_col=1
       if (length(input$FeaturePlot_MetaInput)>2) {
-        number_col=round(sqrt(length(input$FeaturePlot_MetaInput)))
+        number_col=ceiling(sqrt(length(input$FeaturePlot_MetaInput)))
       } else {
         number_col=length(unique(input$FeaturePlot_MetaInput))
       }
-      number_col_contestant=round(length(input$FeaturePlot_MetaInput)/number_col)
+      number_col_contestant=ceiling(length(input$FeaturePlot_MetaInput)/number_col)
       if (number_col_contestant>number_col) {
         number_col=number_col_contestant
       }
@@ -310,25 +310,7 @@
         plots[[i]]=temp
       }
       
-      #plots=FeaturePlot(reactivevalue$SeuratObject,features = c(input$FeaturePlot_GeneInput),reduction = input$GeneFeaturePlot_reduction,order = T)
-      
-      #as_grob(plots)
       plots=patchwork::wrap_plots(plots,ncol=number_col,nrow=number_col)
-      
-      
-      
-        
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
       output$MetaFeaturePlot <- renderPlot({
         print(plots) 
       }, width = reactive({
@@ -381,7 +363,7 @@
       
       
       if (length(unique(input$VlnPlot_GeneInput)) > 2) {
-        number_col = round(sqrt(length(unique(input$VlnPlot_GeneInput))))
+        number_col = ceiling(sqrt(length(unique(input$VlnPlot_GeneInput))))
       } else {
         number_col = length(unique(input$VlnPlot_GeneInput))
       }
@@ -414,7 +396,6 @@
         1300
       }
     }), height = reactive({
-      
       if (num_genes == 1) { 
         500
       } else if (num_genes == 2) { 
@@ -440,7 +421,7 @@
       
       
       if (length(unique(input$VlnPlot_MetaInput)) > 2) {
-        number_col = round(sqrt(length(unique(input$VlnPlot_MetaInput))))
+        number_col = ceiling(sqrt(length(unique(input$VlnPlot_MetaInput))))
       } else {
         number_col = length(unique(input$VlnPlot_MetaInput))
       }
