@@ -8,9 +8,9 @@
     print(reactivevalue$Loaded)
     reactivevalue$SeuratObject=readRDS(reactivevalue$RDS_directory)
     reactivevalue$SeuratObject=UpdateSeuratObject(reactivevalue$SeuratObject)
-    reactivevalue$metadata=reactivevalue$SeuratObject@meta.data
     DefaultAssay(reactivevalue$SeuratObject)='RNA'
     reactivevalue$SeuratObject=NormalizeData(reactivevalue$SeuratObject)
+    reactivevalue$metadata=reactivevalue$SeuratObject@meta.data
     reactivevalue$genes_name=rownames(reactivevalue$SeuratObject)
     
     reactivevalue$reduction=names((reactivevalue$SeuratObject@reductions))
@@ -211,7 +211,7 @@
       }
       
       for (i in input$FeaturePlot_GeneInput) {
-        if (all(as.numeric(reactivevalue$SeuratObject@assays$RNA@data[i,])==0)) {
+        if (all(as.numeric(reactivevalue$SeuratObject@assays$RNA$data[i,])==0)) {
           temp=FeaturePlot(reactivevalue$SeuratObject,features = i,reduction = input$GeneFeaturePlot_reduction,order = T,cols = c('grey','grey'))&theme(plot.title = element_text(size = 20),
                                                                                                                                                                 axis.title = element_text(size = 18, face = "bold"),
                                                                                                                                                                 axis.text = element_text(size = 17),
