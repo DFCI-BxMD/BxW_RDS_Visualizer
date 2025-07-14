@@ -68,6 +68,23 @@
     updateSelectizeInput(session = session,inputId = 'Bar_Graph_y',choices =Bar_Graph_Columns,selected = NULL,server=T)
     updateSelectizeInput(session = session,inputId = 'Bar_Graph_fill',choices =Bar_Graph_Columns,selected = NULL,server=T)
     
+    # Differential Expression Analysis
+    
+    spliter='_thisisastringthatisspecificallydesignedforthesingleviewershinyappbyzhaorongifthisstringappearinthemetadataandcauseproblemthereisreallynotmuchzhaorongcando_'
+    
+    DGE_List=list()
+    for (column in Bar_Graph_Columns) {
+      for (value in unique(reactivevalue$metadata[,column])) {
+        DGE_List[[paste0(column,' - ',value)]]=paste0(column,spliter,value)
+        
+      }
+    }
+    reactivevalue$spliter=spliter
+    reactivevalue$DGE_List=DGE_List
+
+    updateSelectizeInput(session = session,inputId = 'DGE_Group_1',choices=names(DGE_List),selected = NULL,server = T)
+    updateSelectizeInput(session = session,inputId = 'DGE_Group_2',choices=names(DGE_List),selected = NULL,server = T)
+    
     # Feature Plots
     default_reduction <- ifelse("umap" %in% reactivevalue$reduction, "umap", 
                                 ifelse("tsne" %in% reactivevalue$reduction, "tsne", 
@@ -480,3 +497,67 @@
       dev.off()
     }
   })
+  
+  
+  
+  performDGE=eventReactive(input$DGEAction, {
+    if (reactivevalue$Loaded) {
+      waitress$start()
+      temp_DGE=reactivevalue$SeuratObject
+      spliter=reactivevalue$spliter
+      DGE_List=reactivevalue$DGE_List
+      Group1=list()
+      for (i in input$DGE_Group_1) {
+        Group1[[i]]=unlist(strsplit(DGE_List[[i]],split = spliter))
+      }
+      Group2=list()
+      for (i in input$DGE_Group_2) {
+        Group2[[i]]=unlist(strsplit(DGE_List[[i]],split = spliter))
+      }
+      Group1_cells=c()
+      for (i in names(Group1)) {
+        Group1_cells=c(Group1_cells,
+                       rownames(temp_DGE@meta.data)[temp_DGE@meta.data[,Group1[[i]][1]]==Group1[[i]][2]]
+                       )
+      }
+      
+      Group2_cells=c()
+      for (i in names(Group2)) {
+        Group2_cells=c(Group2_cells,
+                       rownames(temp_DGE@meta.data)[temp_DGE@meta.data[,Group2[[i]][1]]==Group2[[i]][2]]
+        )
+      }
+
+      intersect_cells=intersect(Group1_cells,Group2_cells)
+      Group1_cells=Group1_cells[!Group1_cells%in%intersect_cells]
+      Group2_cells=Group2_cells[!Group2_cells%in%intersect_cells]
+      temp_DGE$group='Others'
+      for (i in 1:nrow(temp_DGE@meta.data)) {
+        if (rownames(temp_DGE@meta.data)[i]%in%Group1_cells) {
+          temp_DGE@meta.data$group[i]='Group1'
+        }
+        if (rownames(temp_DGE@meta.data)[i]%in%Group2_cells) {
+          temp_DGE@meta.data$group[i]='Group2'
+        }
+      }
+      DGE_results=FindMarkers(temp_DGE,group.by='group',ident.1='Group1',ident.2='Group2')
+      
+      
+      output$DGE_table=DT::renderDataTable(DT::datatable(cbind(data.frame(row.names = rownames(DGE_results),genes=rownames(DGE_results)),
+                                                               DGE_results),
+                                                        options = list(scrollX = TRUE, keys = TRUE, pageLength = 5),filter = list(position = "top")),server = T)
+      
+      
+      
+      
+      
+      waitress$close()
+    }
+
+    
+  })
+  
+  observe(performDGE())
+  
+  
+  

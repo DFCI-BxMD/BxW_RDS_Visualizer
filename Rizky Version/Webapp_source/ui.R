@@ -39,6 +39,7 @@ dashboardPage(
       menuItem("Dimensionality Reduction Plot", tabName = "DimPlot", icon = icon("cubes")),
       menuItem("Feature Plot", tabName = "Feature_plot_page", icon = icon("chart-bar")),
       menuItem("Violin Plot", tabName = "VlnPlot", icon = icon("record-vinyl")),
+      menuItem("DGE", tabName = "DGE", icon = icon("record-vinyl")),
       menuItem("Help Page", tabName = "help", icon = icon("question"))
     )
   ),
@@ -245,7 +246,27 @@ dashboardPage(
                             )
                             
       ),
-      
+      tab_DGE <- tabItem(tabName = "DGE",
+                            h2("Differential Expression Analysis"),
+                            tabsetPanel(
+                              tabPanel(
+                                "Differential Expression Analysis",
+                                br(),
+                                selectizeInput("DGE_Group_1", "DGE Group 1:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
+                                selectizeInput("DGE_Group_2", "DGE Group 2:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
+                                
+                                actionButton("DGEAction","Perform Differential Analysis"),
+                                br(),
+                                dataTableOutput("DGE_table"),
+                                
+                                div(id = "GeneVlnPlot-container",
+                                    plotOutput("GeneVlnPlot")
+                                ),
+                                br()
+                                )
+                            )
+                            
+      ),
       tab_help <- tabItem(tabName = "help",
                           h2("Help Page"),
                           br(),
