@@ -1,5 +1,71 @@
   #### Check if Seurat Object exist and whether it is loaded: if yes and no, load, if yes and no, stop, if no and no, stop.####
-  
+  volcano.plot.function=function(input=NULL,
+                                 logfc.axis.name=NULL,
+                                 pvalue.axis.name=NULL,
+                                 name.axis.name=NULL,
+                                 x.threshold=0.5,
+                                 y.threshold=0.05,
+                                 genes.to.label=NULL
+  ) {
+    temp=data.frame(xaxis=input[,logfc.axis.name],
+                    yaxis=input[,pvalue.axis.name],
+                    rawyaxis=input[,pvalue.axis.name],
+                    name=input[,name.axis.name])
+    temp$yaxis=ifelse(temp$yaxis==0,yes=.Machine$double.xmin,
+                      no=temp$yaxis)
+    temp$yaxis=-log10(temp$yaxis)
+    temp$score=temp$yaxis*temp$xaxis
+    temp$score=ifelse(abs(temp$xaxis)>=1&temp$rawyaxis<y.threshold,yes=temp$score,no = 0)
+    score=temp$score
+    names(score)=temp$name
+    score=score[order(score,decreasing = T)]
+    label=genes.to.label
+    temp$label=ifelse(temp$name%in%label,yes=temp$name,no='')
+    
+    require(ggplot2)
+    require(ggrepel)
+    temp$group='Insignificant'
+    temp$group=ifelse(temp$xaxis>x.threshold&temp$rawyaxis<y.threshold,yes='UpRegulated',no=temp$group)
+    temp$group=ifelse(temp$xaxis<(-1)*x.threshold&temp$rawyaxis<y.threshold&temp$group=='Insignificant',yes='DownRegulated',no=temp$group)
+    if (!is.null(genes.to.label)) {
+      temp$group=ifelse(temp$name%in%genes.to.label,yes='Testing',no=temp$group)
+      for (i in 1:nrow(temp)) {
+        if (temp$group[i]=='Testing') {
+          if (temp$rawyaxis[i]<y.threshold) {
+            if (temp$xaxis[i]>x.threshold) {
+              temp$group[i]='UpRegulated'
+            } else if (temp$xaxis[i]<((-1)*x.threshold)) {
+              temp$group[i]='DownRegulated'
+            }
+            else {
+              temp$group[i]='Insignificant'
+              
+            }
+          } else {
+            temp$group[i]='Insignificant'
+            
+          }
+        }
+      }
+      
+      
+    }
+    colorscheme=c('darkred','grey','darkblue')
+    names(colorscheme)=c('UpRegulated','Insignificant','DownRegulated')
+    
+    #temp$label=ifelse(as.character(temp$group)=='Insignificant',yes='',no=temp$label)
+    plot=ggplot(temp,aes(x=xaxis,y=yaxis,colour=group,label=label))+geom_point()+geom_text_repel(box.padding = 0.5, max.overlaps = Inf)+xlim(
+      max(abs(temp$xaxis))*(-1),
+      max(abs(temp$xaxis))*(1)
+    )+ylim(0,max(temp$yaxis)*1.1)+xlab(logfc.axis.name)+ylab(paste0('-log10(',pvalue.axis.name,')'))+geom_vline(xintercept = x.threshold, linetype="dashed")+geom_vline(xintercept = (-1)*x.threshold, linetype="dashed")+
+      geom_hline(yintercept = -log10(y.threshold))+theme_bw()
+    plot=plot+scale_colour_manual(values = colorscheme)
+    
+    
+    
+    return(plot)
+    
+  }
   
   waitress <- Waitress$new(theme = "overlay-percent")
   
@@ -540,16 +606,34 @@
           temp_DGE@meta.data$group[i]='Group2'
         }
       }
-      DGE_results=FindMarkers(temp_DGE,group.by='group',ident.1='Group1',ident.2='Group2')
+      if (length(Group1_cells)>2&length(Group2_cells)>2) {
+        DGE_results=FindMarkers(temp_DGE,group.by='group',ident.1='Group1',ident.2='Group2')
+        
+      } else {
+        showNotification('Too little cells to perform differential test.')
+      }
       
       
-      output$DGE_table=DT::renderDataTable(DT::datatable(cbind(data.frame(row.names = rownames(DGE_results),genes=rownames(DGE_results)),
-                                                               DGE_results),
-                                                        options = list(scrollX = TRUE, keys = TRUE, pageLength = 5),filter = list(position = "top")),server = T)
+      output$DGE_table=DT::renderDataTable(cbind(data.frame(row.names = rownames(DGE_results),genes=rownames(DGE_results)),
+                                                               DGE_results),options = list(dom = 'Bfrtip'),
+                                                         rownames= FALSE,
+                                                         filter = list(position = "top"), selection='multiple',server = T)
+      reactivevalue$DGE_table=cbind(data.frame(row.names = rownames(DGE_results),genes=rownames(DGE_results)),
+                                    DGE_results)
+      output$volcano=renderPlot(volcano.plot.function(input = reactivevalue$DGE_table,
+                                           logfc.axis.name = 'avg_log2FC',
+                                           pvalue.axis.name = 'p_val_adj',name.axis.name = 'genes'))
       
-      
-      
-      
+      output$downloadDGE <- downloadHandler(
+        filename = function() {
+          # Use the selected dataset as the suggested file name
+          paste0(input$DGE_Group_1,'.vs.',input$DGE_Group_2, ".Differential.test.tsv")
+        },
+        content = function(file) {
+          # Write the dataset to the file that will be downloaded
+          write.table(reactivevalue$DGE_table, file,sep = '\t',quote=F,row.names = F)
+        }
+      )
       
       waitress$close()
     }
@@ -559,5 +643,14 @@
   
   observe(performDGE())
   
+  observeEvent(input$DGE_table_rows_selected, {
+    print(input$DGE_table_rows_selected)
+    output$volcano=renderPlot(volcano.plot.function(input = reactivevalue$DGE_table,
+                                                    logfc.axis.name = 'avg_log2FC',
+                                                    pvalue.axis.name = 'p_val_adj',name.axis.name = 'genes',genes.to.label = reactivevalue$DGE_table[input$DGE_table_rows_selected,'genes']))
+  })
   
+  
+  
+
   

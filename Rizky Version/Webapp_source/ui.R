@@ -252,17 +252,20 @@ dashboardPage(
                               tabPanel(
                                 "Differential Expression Analysis",
                                 br(),
-                                selectizeInput("DGE_Group_1", "DGE Group 1:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
-                                selectizeInput("DGE_Group_2", "DGE Group 2:",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 8)),
+                                selectizeInput("DGE_Group_1", "DGE Group 1 (Nominator):",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
+                                selectizeInput("DGE_Group_2", "DGE Group 2 (Denomicator):",choices = NULL,selected = NULL,multiple = T,options = list(maxItems = 10)),
                                 
                                 actionButton("DGEAction","Perform Differential Analysis"),
+                                
+                                br(),
+                                plotOutput('volcano'),
+                                
                                 br(),
                                 dataTableOutput("DGE_table"),
+                                br(),
                                 
-                                div(id = "GeneVlnPlot-container",
-                                    plotOutput("GeneVlnPlot")
-                                ),
-                                br()
+                                shinySaveButton("downloadDGE",label = "Download Differential Analysis Results", title = "Download Differential Analysis Results",filetype = list(PDF = "tsv"))
+                                
                                 )
                             )
                             
