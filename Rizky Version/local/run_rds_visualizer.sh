@@ -2,7 +2,7 @@
 
 echo "Starting Single-Cell Analyzer..."
 
-docker load -i rds_vis_local.tar
+docker load -i rds_vis_local.tar.gz
 
 # Run the Docker container
 docker run --rm -d \
@@ -33,5 +33,3 @@ echo "The container will automatically stop after 3 hours."
 sleep 10800
 docker stop rds_visualizer
 ) &
-
-echo "Container has been stopped. Please run the script again to start a new session"
