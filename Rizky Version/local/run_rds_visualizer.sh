@@ -2,6 +2,8 @@
 
 echo "Starting Single-Cell Analyzer..."
 
+docker load -i rds_vis_local.tar
+
 # Run the Docker container
 docker run --rm -d \
   -p 3838:3838 \
