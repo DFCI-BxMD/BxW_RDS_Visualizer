@@ -37,3 +37,7 @@ RUN R -e "install.packages('future')"
 
 RUN R -e "install.packages('devtools')"
 RUN R -e "devtools::install_github('immunogenomics/presto')"
+
+COPY ./Webapp_source/ /srv/shiny-server/
+
+CMD ["/usr/bin/shiny-server"]
