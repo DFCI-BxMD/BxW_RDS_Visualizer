@@ -1,5 +1,3 @@
-#!/bin/sh
-
 Write-Host "Starting Single-Cell Analyzer..."
 
 # Run the Docker container
